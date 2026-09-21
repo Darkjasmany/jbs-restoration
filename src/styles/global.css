@@ -1,1 +1,73 @@
 @import "tailwindcss";
+
+@theme {
+  /* Fuente principal Ghotham SSm A */
+  --font-sans:
+    "Gotham SSm A", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+
+  /* Colores personalizados */
+  --color-ink-900: #101a24;
+  --color-ink-800: #17232f;
+  --color-ink-700: #22323f;
+
+  --color-brand-50: #fdf2ef;
+  --color-brand-100: #fbe0d9;
+  --color-brand-500: #d4482d;
+  --color-brand-600: #b3341f;
+  --color-brand-700: #8f2817;
+  --color-brand-900: #4a150c;
+}
+
+/* ── SELF-HOSTED FONTS (GOTHAM) ── */
+@font-face {
+  font-family: "Gotham SSm A";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("/fonts/gotham-book.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Gotham SSm A";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url("/fonts/gotham-medium.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Gotham SSm A";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url("/fonts/gotham-bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Gotham SSm A";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 800;
+  src: url("/fonts/gotham-black.woff2") format("woff2");
+}
+
+/* ── VIEW TRANSITIONS ── */
+::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal;
+}
+
+/* ── RESET & BASE STYLES ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--bg, #ffffff);
+  scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
+}

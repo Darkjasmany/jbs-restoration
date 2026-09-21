@@ -1,0 +1,55 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  image?: string | null;
+  noindex?: boolean;
+  jsonLd?: object[];
+}
+
+const {
+  title,
+  description = "",
+  image = null,
+  noindex = false,
+  jsonLd = [],
+} = Astro.props;
+
+// Fallback seguro por si Astro.site no está configurado en astro.config.mjs
+const site = Astro.site;
+const canonical = site ? new URL(Astro.url.pathname, site) : Astro.url;
+
+const imageUrl = image
+  ? site
+    ? new URL(image, site).toString()
+    : new URL(image, Astro.url).toString()
+  : null;
+
+const ldScripts = jsonLd.map((data) =>
+  JSON.stringify(data).replace(/</g, "\\u003c"),
+);
+---
+
+<title>{title}</title>
+{description && <meta name="description" content={description} />}
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content={title} />
+{description && <meta property="og:description" content={description} />}
+<meta property="og:url" content={canonical} />
+{imageUrl && <meta property="og:image" content={imageUrl} />}
+
+<!-- Twitter Card -->
+<meta
+  name="twitter:card"
+  content={imageUrl ? "summary_large_image" : "summary"}
+/>
+<meta name="twitter:title" content={title} />
+{description && <meta name="twitter:description" content={description} />}
+{imageUrl && <meta name="twitter:image" content={imageUrl} />}
+
+<!-- Schema.org JSON-LD -->
+{ldScripts.map((json) => <script type="application/ld+json" set:html={json} />)}

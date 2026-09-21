@@ -1,0 +1,12 @@
+---
+import type { SiteConfig } from "../lib/types";
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string | null;
+  jsonLd?: object[];
+  config?: SiteConfig;
+  overlay?: boolean;
+}
+---
