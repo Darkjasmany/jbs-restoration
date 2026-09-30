@@ -1,4 +1,5 @@
 ---
+import { getSiteConfig } from "../lib/queries";
 import type { SiteConfig } from "../lib/types";
 
 interface Props {
@@ -9,4 +10,7 @@ interface Props {
   config?: SiteConfig;
   overlay?: boolean;
 }
+
+const { config: provided, overlay = false, jsonLd = [], ...seo } = Astro.props;
+const config = provided ?? (await getSiteConfig(Astro.locals.supabase));
 ---

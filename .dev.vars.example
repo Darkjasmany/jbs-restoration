@@ -1,0 +1,4 @@
+SUPABASE_SERVICE_ROLE_KEY=YOUR-SERVICE-ROLE-KEY
+RESEND_API_KEY=
+LEAD_NOTIFY_EMAIL=owner@jbsrestoration.com
+LEAD_FROM_EMAIL=JBS Restoration <leads@jbsrestoration.com>
