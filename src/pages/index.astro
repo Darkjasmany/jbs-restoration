@@ -1,7 +1,49 @@
 ---
-import Layout from "../layouts/BaseLayout.astro";
+import PublicLayout from "../layouts/PublicLayout.astro";
+import Hero from "../components/astro/Header.astro";
+import {
+  getPublishedProjects,
+  getSiteConfig,
+  getTestimonials,
+  toSummary,
+} from "../lib/queries";
+
+const db = Astro.locals.supabase;
+
+const [config, featured, testimonials] = await Promise.all([
+  getSiteConfig(db),
+  getPublishedProjects(db, { featured: true, limit: 5 }),
+  getTestimonials(db, 9),
+]);
+
+const showcase = (
+  featured.length >= 3 ? featured : await getPublishedProjects(db, { limit: 5 })
+).map(toSummary);
+
+const steps = [
+  {
+    title: "Inspection",
+    text: "We check the roof, the attic and the surrounding areas to find the real cause of the problem.",
+  },
+  {
+    title: "Written estimate",
+    text: "You get the scope, materials and price in writing before any work starts.",
+  },
+  {
+    title: "The work",
+    text: "We protect your property, complete the job and keep you updated along the way.",
+  },
+  {
+    title: "Final walkthrough",
+    text: "We clean up, review the details together and answer your questions.",
+  },
+];
 ---
 
-<Layout title="">
-  <h1>Hola Selene & Nicolás</h1>
-</Layout>
+<PublicLayout
+  title={`${config.company_name} | Roof Repair, Replacement & Storm Damage`}
+  description={config.hero_subtitle ??
+    `${config.company_name} repairs and replaces roofs and restores storm damage. Request a free estimate.`}
+  config={config}
+  overlay
+/>

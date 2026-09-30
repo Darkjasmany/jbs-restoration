@@ -30,12 +30,19 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
 };
 
 export async function getSiteConfig(db: Client): Promise<SiteConfig> {
+  if (!db) {
+    console.warn("getSiteConfig: El cliente de Supabase (db) es undefined.");
+    return DEFAULT_SITE_CONFIG;
+  }
+
   const { data } = await db
     .from("site_config")
     .select("*")
     .eq("id", 1)
     .maybeSingle();
+
   if (!data) return DEFAULT_SITE_CONFIG;
+
   return data.hero_type === "video" && !data.hero_video_url
     ? { ...data, hero_video_url: DEFAULT_SITE_CONFIG.hero_video_url }
     : data;
