@@ -1,6 +1,6 @@
 ---
 import PublicLayout from "../layouts/PublicLayout.astro";
-import Hero from "../components/astro/Header.astro";
+import Hero from "../components/astro/Hero.astro";
 import {
   getPublishedProjects,
   getSiteConfig,
@@ -46,4 +46,6 @@ const steps = [
     `${config.company_name} repairs and replaces roofs and restores storm damage. Request a free estimate.`}
   config={config}
   overlay
-/>
+>
+  <Hero config={config} />
+</PublicLayout>
