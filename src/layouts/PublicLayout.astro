@@ -2,6 +2,7 @@
 import BaseLayout from "./BaseLayout.astro";
 import Header from "../components/astro/Header.astro";
 import Footer from "../components/astro/Footer.astro";
+import WhatsAppButton from "../components/react/public/WhatsAppButton";
 import { getSiteConfig } from "../lib/queries";
 import { localBusinessLd } from "../lib/seo";
 import type { SiteConfig } from "../lib/types";
@@ -31,10 +32,22 @@ const structured = [localBusinessLd(config, Astro.site!), ...jsonLd];
     class="sr-only z-50 rounded-md bg-white px-4 py-2 font-semibold text-ink-900 focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
     >Skip to content</a
   >
-  <Header config={config} />
-  <!-- <Header config={config} overlay={overlay} /> -->
+  <!-- Sin fondo de imagen o video -->
+  <!-- <Header config={config} /> -->
+  <Header config={config} overlay={overlay} />
   <main id="main">
     <slot />
   </main>
   <Footer config={config} />
+
+  {
+    config.whatsapp_number && (
+      <WhatsAppButton
+        client:idle
+        phone={config.whatsapp_number}
+        messages={config.whatsapp_messages}
+        companyName={config.company_name}
+      />
+    )
+  }
 </BaseLayout>
