@@ -7,6 +7,7 @@ import {
   getTestimonials,
   toSummary,
 } from "../lib/queries";
+import ServicesGrid from "../components/astro/ServicesGrid.astro";
 
 const db = Astro.locals.supabase;
 
@@ -48,4 +49,24 @@ const steps = [
   overlay
 >
   <Hero config={config} />
+
+  <section
+    class="mx-auto grid max-w-6xl gap-12 px-6 py-24 lg:grid-cols-[1fr_1.6fr]"
+  >
+    <div class="lg:sticky lg:top-8 lg:self-start">
+      <h2 class="text-3xl font-extrabold leading-tight sm:text-4xl">
+        Every roof problem, one crew.
+      </h2>
+      <p class="mt-4 max-w-md text-lg text-slate-600">
+        From a single leak to a complete replacement, we handle the roof and the
+        details around it.
+      </p>
+      <a
+        href="/services"
+        class="mt-6 inline-block font-semibold text-brand-700 underline underline-offset-4"
+        >All services</a
+      >
+    </div>
+    <ServicesGrid />
+  </section>
 </PublicLayout>

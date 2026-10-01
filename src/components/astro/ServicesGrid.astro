@@ -1,0 +1,26 @@
+---
+import { SERVICES } from "../../lib/services";
+---
+
+<ol class="divide-y divide-slate-200 border-y border-slate-200">
+  {
+    SERVICES.map((s, i) => (
+      <li>
+        <a
+          href={`/services/${s.slug}`}
+          class="group grid gap-1 py-6 sm:grid-cols-[3rem_1fr] sm:gap-x-6"
+        >
+          <span class="hidden pt-1 text-sm tabular-nums text-slate-400 sm:block">
+            {String(i + 1).padStart(2, "0")}
+          </span>
+          <span>
+            <span class="block text-xl font-bold transition group-hover:text-brand-600">
+              {s.name}
+            </span>
+            <span class="mt-1 block max-w-xl text-slate-600">{s.short}</span>
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ol>
