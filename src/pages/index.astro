@@ -8,6 +8,7 @@ import {
   toSummary,
 } from "../lib/queries";
 import ServicesGrid from "../components/astro/ServicesGrid.astro";
+import ProjectCard from "../components/astro/ProjectCard.astro";
 
 const db = Astro.locals.supabase;
 
@@ -50,6 +51,7 @@ const steps = [
 >
   <Hero config={config} />
 
+  <!-- Services Sections -->
   <section
     class="mx-auto grid max-w-6xl gap-12 px-6 py-24 lg:grid-cols-[1fr_1.6fr]"
   >
@@ -68,5 +70,51 @@ const steps = [
       >
     </div>
     <ServicesGrid />
+  </section>
+
+  <!-- Showcase de proyectos recientes -->
+  {
+    showcase.length > 0 && (
+      <section class="bg-slate-50 py-24">
+        <div class="mx-auto max-w-6xl px-6">
+          <div class="flex flex-wrap items-end justify-between gap-4">
+            <h2 class="text-3xl font-extrabold leading-tight sm:text-4xl">
+              Recent work
+            </h2>
+            <a
+              href="/portfolio"
+              class="font-semibold text-brand-700 underline underline-offset-4"
+            >
+              See all projects
+            </a>
+          </div>
+          <div class="mt-10 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+            {showcase.map((project, i) => (
+              <ProjectCard project={project} wide={i === 0} />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Testimoniales -->
+  <section class="mx-auto max-w-6xl px-6 py-24">
+    <h2 class="max-w-2xl text-3xl font-extrabold leading-tight sm:text-4xl">
+      What happens after you call.
+    </h2>
+    <ol class="mt-12 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        steps.map((step, i) => (
+          <li>
+            <span class="block text-5xl font-extrabold text-brand-600/25 tabular-nums">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <h3 class="mt-2 text-lg font-bold">{step.title}</h3>
+            <p class="mt-2 text-slate-600">{step.text}</p>
+          </li>
+        ))
+      }
+    </ol>
   </section>
 </PublicLayout>
