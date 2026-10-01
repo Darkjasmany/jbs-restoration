@@ -36,5 +36,5 @@ const structured = [localBusinessLd(config, Astro.site!), ...jsonLd];
   <main id="main">
     <slot />
   </main>
-  <Footer />
+  <Footer config={config} />
 </BaseLayout>

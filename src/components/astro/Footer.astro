@@ -1,0 +1,106 @@
+---
+import { SERVICES } from "../../lib/services";
+import type { SiteConfig } from "../../lib/types";
+import { getActiveSocialLinks, toTel } from "../../lib/utils";
+import { yearNow } from "../../lib/utils";
+
+interface Props {
+  config: SiteConfig;
+}
+
+const { config } = Astro.props;
+const year = yearNow();
+const tel = toTel(config.phone);
+const socials = getActiveSocialLinks(config.social_links);
+---
+
+<footer class="bg-ink-900 text-white/75">
+  <div
+    class="mx-auto grid max-w-6xl gap-12 px-6 py-16 md:grid-cols-[1.4fr_1fr_1fr]"
+  >
+    <div>
+      <p class="text-xl font-extrabold text-white">{config.company_name}</p>
+      <p class="mt-3 max-w-sm">
+        Roof repair, replacement and storm damage restoration.
+      </p>
+      {
+        config.service_areas.length > 0 && (
+          <p class="mt-4 max-w-sm text-sm">
+            Serving {config.service_areas.join(", ")}.
+          </p>
+        )
+      }
+    </div>
+    <nav aria-label="Services">
+      <p class="font-semibold text-white">Services</p>
+      <ul class="mt-3 space-y-2">
+        {
+          SERVICES.map((s) => (
+            <li>
+              <a
+                href={`/services/${s.slug}`}
+                class="hover:text-white hover:underline"
+              >
+                {s.name}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <div>
+      <p class="font-semibold text-white">Contact</p>
+      <ul class="mt-3 space-y-2">
+        {
+          tel && (
+            <li>
+              <a href={tel} class="hover:text-white hover:underline">
+                {config.phone}
+              </a>
+            </li>
+          )
+        }
+        {
+          config.email && (
+            <li>
+              <a
+                href={`mailto:${config.email}`}
+                class="hover:text-white hover:underline"
+              >
+                {config.email}
+              </a>
+            </li>
+          )
+        }
+        {config.address && <li>{config.address}</li>}
+        <li>
+          <a
+            href="/contact"
+            class="font-semibold text-white underline underline-offset-4"
+            >Request a free estimate</a
+          >
+        </li>
+        {
+          socials.map(([name, url]) => (
+            <li>
+              <a
+                href={url}
+                rel="noopener noreferrer"
+                target="_blank"
+                class="capitalize hover:text-white hover:underline"
+              >
+                {name}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-white/10">
+    <p class="mx-auto max-w-6xl px-6 py-6 text-sm text-center">
+      &copy; {year} &nbsp;
+      {config.company_name}. All rights reserved.
+    </p>
+  </div>
+</footer>
