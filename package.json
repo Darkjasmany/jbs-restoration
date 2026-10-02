@@ -10,9 +10,8 @@
     "check": "astro check",
     "build": "astro build",
     "preview": "wrangler dev",
-    "preview1": "wrangler pages dev ./dist",
-    "deploy": "npm run build && wrangler deploy --config ./dist/server/wrangler.json",
-    "deploy1": "npm run build && wrangler pages deploy ./dist --project-name=jbsrestoration",
+    "deploy": "rm -rf .wrangler dist && npm run build && wrangler deploy",
+    "logs": "wrangler tail",
     "types": "supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > src/lib/database.generated.ts",
     "astro": "astro"
   },
