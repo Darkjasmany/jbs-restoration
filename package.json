@@ -9,12 +9,15 @@
     "dev": "astro dev",
     "check": "astro check",
     "build": "astro build",
-    "preview": "wrangler pages dev ./dist",
-    "deploy": "npm run build && wrangler pages deploy ./dist --project-name=jbsrestoration",
+    "preview": "wrangler dev",
+    "preview1": "wrangler pages dev ./dist",
+    "deploy": "npm run build && wrangler deploy --config ./dist/server/wrangler.json",
+    "deploy1": "npm run build && wrangler pages deploy ./dist --project-name=jbsrestoration",
     "types": "supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > src/lib/database.generated.ts",
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^14.3.3",
     "@astrojs/react": "^6.0.6",
     "@supabase/supabase-js": "^2.117.2",
     "@tailwindcss/vite": "^4.3.3",
@@ -28,5 +31,8 @@
   },
   "allowScripts": {
     "esbuild": true
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261002.1"
   }
 }
