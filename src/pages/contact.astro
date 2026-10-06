@@ -1,0 +1,52 @@
+---
+import ContactForm from "../components/react/public/ContactForm";
+import PublicLayout from "../layouts/PublicLayout.astro";
+import { getSiteConfig } from "../lib/queries";
+import { breadcrumbLd } from "../lib/seo";
+import { SERVICE_OPTIONS, SERVICES } from "../lib/services";
+
+const config = await getSiteConfig(Astro.locals.supabase);
+const requested = Astro.url.searchParams.get("service") ?? "";
+const initialService = SERVICES.some((s) => s.slug === requested)
+  ? requested
+  : "";
+const tel = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, "")}` : null;
+const wa = config.whatsapp_number?.replace(/\D/g, "");
+---
+
+<PublicLayout
+  title={`Free Roof Estimate | ${config.company_name}`}
+  description={`Request a free roof inspection and estimate from ${config.company_name}.`}
+  config={config}
+  jsonLd={[
+    breadcrumbLd(
+      [
+        { name: "Home", path: "/" },
+        { name: "Contact", path: "/contact" },
+      ],
+      Astro.site!,
+    ),
+  ]}
+>
+  <section
+    class="mx-auto grid max-w-6xl gap-16 px-6 py-20 lg:grid-cols-[1.3fr_1fr]"
+  >
+    <div>
+      <h1 class="text-4xl font-extrabold leading-tight sm:text-5xl">
+        Get your free estimate
+      </h1>
+      <p class="mt-4 max-w-xl text-lg text-slate-600">
+        Tell us what is going on with your roof. We will get back to you to
+        schedule an inspection.
+      </p>
+      <div class="mt-10">
+        <ContactForm
+          client:load
+          services={SERVICE_OPTIONS}
+          initialService={initialService}
+          whatsappNumber={config.whatsapp_number}
+        />
+      </div>
+    </div>
+  </section></PublicLayout
+>

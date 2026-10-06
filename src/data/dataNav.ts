@@ -25,3 +25,19 @@ export const steps = [
     text: "We clean up, review the details together and answer your questions.",
   },
 ];
+
+// Principios de la empresa
+export const principles = [
+  {
+    title: "Clear estimates",
+    text: "Scope, materials and price are written down before the work begins.",
+  },
+  {
+    title: "Clean job sites",
+    text: "We protect landscaping and finish every day with cleanup.",
+  },
+  {
+    title: "Honest recommendations",
+    text: "If a repair is enough, we will say so. If the roof needs replacing, we will show you why.",
+  },
+];
