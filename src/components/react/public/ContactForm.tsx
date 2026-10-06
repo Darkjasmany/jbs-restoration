@@ -1,6 +1,6 @@
-import React, { useState, type SyntheticEvent } from "react";
+import { useState, type SyntheticEvent } from "react";
+import { Button } from "../ui/Button";
 import type { ContactPayload } from "../../../lib/schemas";
-import Button from "../ui/Button";
 
 type Props = {
   services: [string, string][];
@@ -15,11 +15,11 @@ type FieldErrors = Partial<
 const inputCls =
   "mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500/30";
 
-const ContactForm = ({
+export function ContactForm({
   services,
   initialService = "",
   whatsappNumber,
-}: Props) => {
+}: Props) {
   const [startedAt] = useState(() => Date.now());
   const [values, setValues] = useState({
     name: "",
@@ -213,6 +213,4 @@ const ContactForm = ({
       </Button>
     </form>
   );
-};
-
-export default ContactForm;
+}

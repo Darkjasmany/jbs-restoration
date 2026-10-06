@@ -1,4 +1,4 @@
-import React, { type ButtonHTMLAttributes } from "react";
+import type { ButtonHTMLAttributes } from "react";
 
 type Variant = "primary" | "secondary" | "danger" | "ghost";
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -14,7 +14,7 @@ const variants: Record<Variant, string> = {
   ghost: "text-slate-700 hover:bg-slate-100",
 };
 
-const Button = ({
+export function Button({
   variant = "primary",
   loading = false,
   disabled,
@@ -22,7 +22,7 @@ const Button = ({
   children,
   type = "button",
   ...rest
-}: Props) => {
+}: Props) {
   return (
     <button
       type={type}
@@ -40,6 +40,4 @@ const Button = ({
       {children}
     </button>
   );
-};
-
-export default Button;
+}

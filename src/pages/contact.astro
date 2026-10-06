@@ -1,9 +1,9 @@
 ---
-import ContactForm from "../components/react/public/ContactForm";
 import PublicLayout from "../layouts/PublicLayout.astro";
+import { ContactForm } from "../components/react/public/ContactForm";
+import { SERVICES, SERVICE_OPTIONS } from "../lib/services";
 import { getSiteConfig } from "../lib/queries";
 import { breadcrumbLd } from "../lib/seo";
-import { SERVICE_OPTIONS, SERVICES } from "../lib/services";
 
 const config = await getSiteConfig(Astro.locals.supabase);
 const requested = Astro.url.searchParams.get("service") ?? "";
@@ -48,5 +48,77 @@ const wa = config.whatsapp_number?.replace(/\D/g, "");
         />
       </div>
     </div>
-  </section></PublicLayout
->
+
+    <aside class="h-fit rounded-2xl bg-slate-50 p-8 ring-1 ring-slate-200">
+      <h2 class="text-xl font-bold">Prefer to talk?</h2>
+      <ul class="mt-5 space-y-4">
+        {
+          tel && (
+            <li>
+              <>
+                <span class="block text-sm text-slate-500">Phone</span>
+                <a href={tel} class="text-lg font-semibold hover:underline">
+                  {config.phone}
+                </a>
+              </>
+            </li>
+          )
+        }
+        {
+          wa && (
+            <li>
+              <>
+                <span class="block text-sm text-slate-500">WhatsApp</span>
+                <a
+                  href={`https://wa.me/${wa}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-lg font-semibold hover:underline"
+                >
+                  Send us a message
+                </a>
+              </>
+            </li>
+          )
+        }
+        {
+          config.email && (
+            <li>
+              <>
+                <span class="block text-sm text-slate-500">Email</span>
+                <a
+                  href={`mailto:${config.email}`}
+                  class="text-lg font-semibold hover:underline"
+                >
+                  {config.email}
+                </a>
+              </>
+            </li>
+          )
+        }
+        {
+          config.address && (
+            <li>
+              <>
+                <span class="block text-sm text-slate-500">Address</span>
+                <span class="text-lg font-semibold">{config.address}</span>
+              </>
+            </li>
+          )
+        }
+        {
+          config.service_areas.length > 0 && (
+            <li>
+              <>
+                <span class="block text-sm text-slate-500">Service area</span>
+                <span class="font-semibold">
+                  {config.service_areas.join(", ")}
+                </span>
+              </>
+            </li>
+          )
+        }
+      </ul>
+    </aside>
+  </section>
+</PublicLayout>
