@@ -1,0 +1,18 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { ProjectForm } from '../../../components/react/admin/ProjectForm';
+import type { ProjectWithMedia } from '../../../lib/types';
+
+const { id } = Astro.params;
+if (!id || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+  return new Response('Not found', { status: 404 });
+}
+
+const { data } = await Astro.locals.supabase.from('projects').select('*, project_media(*)').eq('id', id).maybeSingle();
+if (!data) return new Response('Not found', { status: 404 });
+const project = data as unknown as ProjectWithMedia;
+---
+
+<AdminLayout title="Edit project">
+  <ProjectForm client:only="react" initial={project} />
+</AdminLayout>

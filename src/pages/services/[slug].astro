@@ -1,6 +1,4 @@
 ---
-// export const prerender = false; // Astro opera por defecto con SSG (Static Site Generation). Cuando creas una ruta dinámica con corchetes como [slug].astro, Astro intenta pre-renderizar en tiempo de compilación (build time) todas las páginas posibles y necesita saber de antemano qué slugs existen.
-
 import PublicLayout from "../../layouts/PublicLayout.astro";
 import ProjectCard from "../../components/astro/ProjectCard.astro";
 import CtaBand from "../../components/astro/CtaBand.astro";
@@ -59,43 +57,43 @@ const tel = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, "")}` : null;
         {service.intro}
       </p>
 
-      <section>
-        <h2 class="text-2xl font-bold">What is included</h2>
-        <ul class="mt-5 space-y-3">
-          {
-            service.includes.map((item) => (
-              <li class="flex gap-3">
-                <>
+      {
+        service.includes.length > 0 && (
+          <section>
+            <h2 class="text-2xl font-bold">What is included</h2>
+            <ul class="mt-5 space-y-3">
+              {service.includes.map((item) => (
+                <li class="flex gap-3">
                   <span
                     class="mt-2.5 h-1.5 w-1.5 flex-none rounded-full bg-brand-600"
                     aria-hidden="true"
                   />
                   <span>{item}</span>
-                </>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
 
-      <section>
-        <h2 class="text-2xl font-bold">Signs you may need this</h2>
-        <ul class="mt-5 space-y-3">
-          {
-            service.signs.map((item) => (
-              <li class="flex gap-3">
-                <>
+      {
+        service.signs.length > 0 && (
+          <section>
+            <h2 class="text-2xl font-bold">Signs you may need this</h2>
+            <ul class="mt-5 space-y-3">
+              {service.signs.map((item) => (
+                <li class="flex gap-3">
                   <span
                     class="mt-2.5 h-1.5 w-1.5 flex-none rounded-full bg-brand-600"
                     aria-hidden="true"
                   />
                   <span>{item}</span>
-                </>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
 
       {
         related.length > 0 && (
@@ -118,21 +116,23 @@ const tel = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, "")}` : null;
         )
       }
 
-      <section>
-        <h2 class="text-2xl font-bold">Common questions</h2>
-        <div class="mt-5 divide-y divide-slate-200 border-y border-slate-200">
-          {
-            service.faqs.map((faq) => (
-              <details class="group py-4">
-                <summary class="cursor-pointer list-none font-semibold [&::-webkit-details-marker]:hidden">
-                  {faq.q}
-                </summary>
-                <p class="mt-2 text-slate-600">{faq.a}</p>
-              </details>
-            ))
-          }
-        </div>
-      </section>
+      {
+        service.faqs.length > 0 && (
+          <section>
+            <h2 class="text-2xl font-bold">Common questions</h2>
+            <div class="mt-5 divide-y divide-slate-200 border-y border-slate-200">
+              {service.faqs.map((faq) => (
+                <details class="group py-4">
+                  <summary class="cursor-pointer list-none font-semibold [&::-webkit-details-marker]:hidden">
+                    {faq.q}
+                  </summary>
+                  <p class="mt-2 text-slate-600">{faq.a}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+        )
+      }
     </div>
 
     <aside class="lg:sticky lg:top-8 lg:self-start">

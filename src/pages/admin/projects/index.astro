@@ -1,0 +1,39 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+
+const { data: projects, error } = await Astro.locals.supabase
+  .from('projects')
+  .select('id, title, status, city, state, completed_on, is_featured')
+  .order('created_at', { ascending: false });
+---
+
+<AdminLayout title="Projects">
+  <div class="mb-4 flex justify-end">
+    <a href="/admin/projects/new" class="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700">Add project</a>
+  </div>
+  {error && <p role="alert" class="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">Could not load projects: {error.message}</p>}
+  {
+    projects && projects.length > 0 ? (
+      <ul class="divide-y divide-slate-200 rounded-xl bg-white ring-1 ring-slate-200">
+        {projects.map((p) => (
+          <li>
+            <a href={`/admin/projects/${p.id}`} class="flex items-center justify-between gap-4 px-4 py-3 hover:bg-slate-50">
+              <span>
+                <span class="block font-medium">{p.title}</span>
+                <span class="block text-sm text-slate-500">{[p.city, p.state].filter(Boolean).join(', ') || 'No location'}</span>
+              </span>
+              <span class="flex items-center gap-2 text-xs font-medium">
+                {p.is_featured && <span class="rounded-full bg-amber-100 px-2 py-1 text-amber-800">Featured</span>}
+                <span class:list={['rounded-full px-2 py-1', p.status === 'published' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-700']}>
+                  {p.status === 'published' ? 'Published' : 'Draft'}
+                </span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      !error && <p class="rounded-xl bg-white p-6 text-slate-600 ring-1 ring-slate-200">No projects yet. Add your first finished roof to start building the portfolio.</p>
+    )
+  }
+</AdminLayout>

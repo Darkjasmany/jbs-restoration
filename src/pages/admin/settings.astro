@@ -1,0 +1,11 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { HeroSettings } from '../../components/react/admin/HeroSettings';
+import { getSiteConfig } from '../../lib/queries';
+
+const config = await getSiteConfig(Astro.locals.supabase);
+---
+
+<AdminLayout title="Site settings">
+  <HeroSettings client:only="react" initial={config} />
+</AdminLayout>

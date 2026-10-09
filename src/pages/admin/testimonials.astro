@@ -1,0 +1,15 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { TestimonialsManager } from '../../components/react/admin/TestimonialsManager';
+import type { Testimonial } from '../../lib/types';
+
+const db = Astro.locals.supabase;
+const [{ data: testimonials }, { data: projects }] = await Promise.all([
+  db.from('testimonials').select('*').order('created_at', { ascending: false }),
+  db.from('projects').select('id, title').order('title'),
+]);
+---
+
+<AdminLayout title="Testimonials">
+  <TestimonialsManager client:only="react" initial={(testimonials ?? []) as Testimonial[]} projects={projects ?? []} />
+</AdminLayout>

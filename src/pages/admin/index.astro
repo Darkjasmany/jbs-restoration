@@ -1,0 +1,57 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+const db = Astro.locals.supabase;
+const count = async (table: 'projects' | 'testimonials' | 'leads', filter?: [string, string | boolean]) => {
+  const query = db.from(table).select('id', { count: 'exact', head: true });
+  const { count: total } = await (filter ? query.eq(filter[0], filter[1]) : query);
+  return total ?? 0;
+};
+
+const [published, drafts, testimonials, newLeads] = await Promise.all([
+  count('projects', ['status', 'published']),
+  count('projects', ['status', 'draft']),
+  count('testimonials'),
+  count('leads', ['status', 'new']),
+]);
+
+const stats = [
+  { label: 'Published projects', value: published, href: '/admin/projects' },
+  { label: 'Draft projects', value: drafts, href: '/admin/projects' },
+  { label: 'Testimonials', value: testimonials, href: '/admin/testimonials' },
+  { label: 'New estimate requests', value: newLeads, href: null },
+];
+const actions = [
+  { href: '/admin/projects/new', title: 'Add a finished roof', text: 'Upload photos, describe the job and publish it.' },
+  { href: '/admin/testimonials', title: 'Manage testimonials', text: 'Add, hide or edit customer reviews.' },
+  { href: '/admin/settings', title: 'Change the home page banner', text: 'Swap the background video, text and WhatsApp messages.' },
+];
+---
+
+<AdminLayout title="Overview">
+  <dl class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    {
+      stats.map((s) => (
+        <div class="rounded-xl bg-white p-5 ring-1 ring-slate-200">
+          <dt class="text-sm text-slate-500">{s.label}</dt>
+          <dd class="mt-1 text-3xl font-extrabold tabular-nums">{s.href ? <a href={s.href} class="hover:text-brand-600">{s.value}</a> : s.value}</dd>
+        </div>
+      ))
+    }
+  </dl>
+  <p class="mt-3 text-sm text-slate-500">Estimate requests are emailed to you when notifications are configured and are stored in your database.</p>
+
+  <h2 class="mb-4 mt-10 text-lg font-bold">What would you like to do?</h2>
+  <ul class="grid gap-4 md:grid-cols-3">
+    {
+      actions.map((a) => (
+        <li>
+          <a href={a.href} class="block h-full rounded-xl bg-white p-5 ring-1 ring-slate-200 transition hover:ring-brand-600">
+            <span class="block font-semibold">{a.title}</span>
+            <span class="mt-1 block text-sm text-slate-600">{a.text}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</AdminLayout>

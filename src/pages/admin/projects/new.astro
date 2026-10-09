@@ -1,0 +1,8 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { ProjectForm } from '../../../components/react/admin/ProjectForm';
+---
+
+<AdminLayout title="New project">
+  <ProjectForm client:only="react" initial={null} />
+</AdminLayout>
