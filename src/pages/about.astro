@@ -1,55 +1,34 @@
 ---
-import PublicLayout from "../layouts/PublicLayout.astro";
-import CtaBand from "../components/astro/CtaBand.astro";
-import { getSiteConfig } from "../lib/queries";
-import { breadcrumbLd } from "../lib/seo";
-import { principles } from "../data/dataNav";
+import PublicLayout from '../layouts/PublicLayout.astro';
+import CtaBand from '../components/astro/CtaBand.astro';
+import { getSiteConfig } from '../lib/queries';
+import { breadcrumbLd } from '../lib/seo';
 
 const config = await getSiteConfig(Astro.locals.supabase);
+const principles = [
+  { title: 'Clear estimates', text: 'Scope, materials and price are written down before the work begins.' },
+  { title: 'Clean job sites', text: 'We protect landscaping and finish every day with cleanup.' },
+  { title: 'Honest recommendations', text: 'If a repair is enough, we will say so. If the roof needs replacing, we will show you why.' },
+];
 ---
 
 <PublicLayout
   title={`About | ${config.company_name}`}
   description={`${config.company_name} is a roofing contractor for roof repair, replacement and storm damage restoration.`}
   config={config}
-  jsonLd={[
-    breadcrumbLd(
-      [
-        { name: "Home", path: "/" },
-        { name: "About", path: "/about" },
-      ],
-      Astro.site!,
-    ),
-  ]}
+  jsonLd={[breadcrumbLd([{ name: 'Home', path: '/' }, { name: 'About', path: '/about' }], Astro.site!)]}
 >
   <section class="mx-auto max-w-6xl px-6 py-20">
-    <h1 class="max-w-3xl text-4xl font-extrabold leading-tight sm:text-5xl">
-      About {config.company_name}
-    </h1>
+    <h1 class="max-w-3xl text-4xl font-extrabold leading-tight sm:text-5xl">About {config.company_name}</h1>
     <p class="mt-6 max-w-2xl text-xl leading-relaxed text-slate-700">
-      {config.company_name} repairs and replaces roofs and restores storm damage for
-      homeowners. Our goal on every job is the same: find the real problem, explain
-      it plainly, and fix it properly.
+      {config.company_name} repairs and replaces roofs and restores storm damage for homeowners. Our goal on every job is the same: find the real problem, explain it plainly, and fix it properly.
     </p>
-    {
-      config.tagline && (
-        <p class="mt-4 max-w-2xl text-lg text-slate-600">{config.tagline}</p>
-      )
-    }
+    {config.tagline && <p class="mt-4 max-w-2xl text-lg text-slate-600">{config.tagline}</p>}
   </section>
 
   <section class="bg-slate-50 py-20">
     <div class="mx-auto grid max-w-6xl gap-10 px-6 md:grid-cols-3">
-      {
-        principles.map((p) => (
-          <div>
-            <>
-              <h2 class="text-xl font-bold">{p.title}</h2>
-              <p class="mt-2 text-slate-600">{p.text}</p>
-            </>
-          </div>
-        ))
-      }
+      {principles.map((p) => <div><h2 class="text-xl font-bold">{p.title}</h2><p class="mt-2 text-slate-600">{p.text}</p></div>)}
     </div>
   </section>
 
@@ -58,9 +37,7 @@ const config = await getSiteConfig(Astro.locals.supabase);
       <section class="mx-auto max-w-6xl px-6 py-20">
         <h2 class="text-3xl font-extrabold">Where we work</h2>
         <ul class="mt-6 flex flex-wrap gap-x-8 gap-y-2 text-lg text-slate-700">
-          {config.service_areas.map((area) => (
-            <li>{area}</li>
-          ))}
+          {config.service_areas.map((area) => <li>{area}</li>)}
         </ul>
       </section>
     )

@@ -1,123 +1,40 @@
 ---
-import PublicLayout from "../layouts/PublicLayout.astro";
-import { ContactForm } from "../components/react/public/ContactForm";
-import { SERVICES, SERVICE_OPTIONS } from "../lib/services";
-import { getSiteConfig } from "../lib/queries";
-import { breadcrumbLd } from "../lib/seo";
+import PublicLayout from '../layouts/PublicLayout.astro';
+import { ContactForm } from '../components/react/public/ContactForm';
+import { SERVICES, SERVICE_OPTIONS } from '../lib/services';
+import { getSiteConfig } from '../lib/queries';
+import { breadcrumbLd } from '../lib/seo';
 
 const config = await getSiteConfig(Astro.locals.supabase);
-const requested = Astro.url.searchParams.get("service") ?? "";
-const initialService = SERVICES.some((s) => s.slug === requested)
-  ? requested
-  : "";
-const tel = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, "")}` : null;
-const wa = config.whatsapp_number?.replace(/\D/g, "");
+const requested = Astro.url.searchParams.get('service') ?? '';
+const initialService = SERVICES.some((s) => s.slug === requested) ? requested : '';
+const tel = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, '')}` : null;
+const wa = config.whatsapp_number?.replace(/\D/g, '');
 ---
 
 <PublicLayout
   title={`Free Roof Estimate | ${config.company_name}`}
   description={`Request a free roof inspection and estimate from ${config.company_name}.`}
   config={config}
-  jsonLd={[
-    breadcrumbLd(
-      [
-        { name: "Home", path: "/" },
-        { name: "Contact", path: "/contact" },
-      ],
-      Astro.site!,
-    ),
-  ]}
+  jsonLd={[breadcrumbLd([{ name: 'Home', path: '/' }, { name: 'Contact', path: '/contact' }], Astro.site!)]}
 >
-  <section
-    class="mx-auto grid max-w-6xl gap-16 px-6 py-20 lg:grid-cols-[1.3fr_1fr]"
-  >
+  <section class="mx-auto grid max-w-6xl gap-16 px-6 py-20 lg:grid-cols-[1.3fr_1fr]">
     <div>
-      <h1 class="text-4xl font-extrabold leading-tight sm:text-5xl">
-        Get your free estimate
-      </h1>
-      <p class="mt-4 max-w-xl text-lg text-slate-600">
-        Tell us what is going on with your roof. We will get back to you to
-        schedule an inspection.
-      </p>
+      <h1 class="text-4xl font-extrabold leading-tight sm:text-5xl">Get your free estimate</h1>
+      <p class="mt-4 max-w-xl text-lg text-slate-600">Tell us what is going on with your roof. We will get back to you to schedule an inspection.</p>
       <div class="mt-10">
-        <ContactForm
-          client:load
-          services={SERVICE_OPTIONS}
-          initialService={initialService}
-          whatsappNumber={config.whatsapp_number}
-        />
+        <ContactForm client:load services={SERVICE_OPTIONS} initialService={initialService} whatsappNumber={config.whatsapp_number} />
       </div>
     </div>
 
     <aside class="h-fit rounded-2xl bg-slate-50 p-8 ring-1 ring-slate-200">
       <h2 class="text-xl font-bold">Prefer to talk?</h2>
       <ul class="mt-5 space-y-4">
-        {
-          tel && (
-            <li>
-              <>
-                <span class="block text-sm text-slate-500">Phone</span>
-                <a href={tel} class="text-lg font-semibold hover:underline">
-                  {config.phone}
-                </a>
-              </>
-            </li>
-          )
-        }
-        {
-          wa && (
-            <li>
-              <>
-                <span class="block text-sm text-slate-500">WhatsApp</span>
-                <a
-                  href={`https://wa.me/${wa}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-lg font-semibold hover:underline"
-                >
-                  Send us a message
-                </a>
-              </>
-            </li>
-          )
-        }
-        {
-          config.email && (
-            <li>
-              <>
-                <span class="block text-sm text-slate-500">Email</span>
-                <a
-                  href={`mailto:${config.email}`}
-                  class="text-lg font-semibold hover:underline"
-                >
-                  {config.email}
-                </a>
-              </>
-            </li>
-          )
-        }
-        {
-          config.address && (
-            <li>
-              <>
-                <span class="block text-sm text-slate-500">Address</span>
-                <span class="text-lg font-semibold">{config.address}</span>
-              </>
-            </li>
-          )
-        }
-        {
-          config.service_areas.length > 0 && (
-            <li>
-              <>
-                <span class="block text-sm text-slate-500">Service area</span>
-                <span class="font-semibold">
-                  {config.service_areas.join(", ")}
-                </span>
-              </>
-            </li>
-          )
-        }
+        {tel && <li><span class="block text-sm text-slate-500">Phone</span><a href={tel} class="text-lg font-semibold hover:underline">{config.phone}</a></li>}
+        {wa && <li><span class="block text-sm text-slate-500">WhatsApp</span><a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer" class="text-lg font-semibold hover:underline">Send us a message</a></li>}
+        {config.email && <li><span class="block text-sm text-slate-500">Email</span><a href={`mailto:${config.email}`} class="text-lg font-semibold hover:underline">{config.email}</a></li>}
+        {config.address && <li><span class="block text-sm text-slate-500">Address</span><span class="text-lg font-semibold">{config.address}</span></li>}
+        {config.service_areas.length > 0 && <li><span class="block text-sm text-slate-500">Service area</span><span class="font-semibold">{config.service_areas.join(', ')}</span></li>}
       </ul>
     </aside>
   </section>

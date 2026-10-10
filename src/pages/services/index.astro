@@ -1,9 +1,9 @@
 ---
-import PublicLayout from "../../layouts/PublicLayout.astro";
-import ServicesGrid from "../../components/astro/ServicesGrid.astro";
-import CtaBand from "../../components/astro/CtaBand.astro";
-import { getSiteConfig } from "../../lib/queries";
-import { breadcrumbLd } from "../../lib/seo";
+import PublicLayout from '../../layouts/PublicLayout.astro';
+import ServicesGrid from '../../components/astro/ServicesGrid.astro';
+import CtaBand from '../../components/astro/CtaBand.astro';
+import { getSiteConfig } from '../../lib/queries';
+import { breadcrumbLd } from '../../lib/seo';
 
 const config = await getSiteConfig(Astro.locals.supabase);
 ---
@@ -12,24 +12,11 @@ const config = await getSiteConfig(Astro.locals.supabase);
   title={`Roofing Services | ${config.company_name}`}
   description="Roof replacement, roof repair, new installation, storm damage restoration, metal roofing and gutters."
   config={config}
-  jsonLd={[
-    breadcrumbLd(
-      [
-        { name: "Home", path: "/" },
-        { name: "Services", path: "/services" },
-      ],
-      Astro.site!,
-    ),
-  ]}
+  jsonLd={[breadcrumbLd([{ name: 'Home', path: '/' }, { name: 'Services', path: '/services' }], Astro.site!)]}
 >
   <section class="mx-auto max-w-6xl px-6 py-20">
-    <h1 class="max-w-3xl text-4xl font-extrabold leading-tight sm:text-5xl">
-      Roofing services
-    </h1>
-    <p class="mt-5 max-w-2xl text-lg text-slate-600">
-      Choose what fits your situation. If you are not sure, request an
-      inspection and we will tell you what the roof actually needs.
-    </p>
+    <h1 class="max-w-3xl text-4xl font-extrabold leading-tight sm:text-5xl">Roofing services</h1>
+    <p class="mt-5 max-w-2xl text-lg text-slate-600">Choose what fits your situation. If you are not sure, request an inspection and we will tell you what the roof actually needs.</p>
     <div class="mt-12">
       <ServicesGrid />
     </div>

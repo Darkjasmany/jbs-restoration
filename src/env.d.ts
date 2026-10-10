@@ -7,6 +7,8 @@ interface Env {
   RESEND_API_KEY?: string;
   LEAD_NOTIFY_EMAIL?: string;
   LEAD_FROM_EMAIL?: string;
+  N8N_WEBHOOK_URL?: string;
+  N8N_WEBHOOK_SECRET?: string;
 }
 
 interface ImportMetaEnv {
@@ -16,6 +18,8 @@ interface ImportMetaEnv {
   readonly RESEND_API_KEY?: string;
   readonly LEAD_NOTIFY_EMAIL?: string;
   readonly LEAD_FROM_EMAIL?: string;
+  readonly N8N_WEBHOOK_URL?: string;
+  readonly N8N_WEBHOOK_SECRET?: string;
 }
 
 interface ImportMeta {

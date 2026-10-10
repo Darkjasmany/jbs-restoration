@@ -1,67 +1,36 @@
 ---
-import PublicLayout from "../../layouts/PublicLayout.astro";
-import CtaBand from "../../components/astro/CtaBand.astro";
-import PortfolioFilter from "../../components/react/public/PortfolioFilter";
-import { SERVICES, SERVICE_OPTIONS } from "../../lib/services";
-import {
-  getPublishedProjects,
-  getSiteConfig,
-  toSummary,
-} from "../../lib/queries";
-import { breadcrumbLd } from "../../lib/seo";
+import PublicLayout from '../../layouts/PublicLayout.astro';
+import CtaBand from '../../components/astro/CtaBand.astro';
+import { PortfolioFilter } from '../../components/react/public/PortfolioFilter';
+import { SERVICES, SERVICE_OPTIONS } from '../../lib/services';
+import { getPublishedProjects, getSiteConfig, toSummary } from '../../lib/queries';
+import { breadcrumbLd } from '../../lib/seo';
 
 const db = Astro.locals.supabase;
-const [config, projects] = await Promise.all([
-  getSiteConfig(db),
-  getPublishedProjects(db),
-]);
+const [config, projects] = await Promise.all([getSiteConfig(db), getPublishedProjects(db)]);
 const summaries = projects.map(toSummary);
 
-const requested = Astro.url.searchParams.get("service") ?? "";
-const initialService = SERVICES.some((s) => s.slug === requested)
-  ? requested
-  : "";
-const requestedCity = Astro.url.searchParams.get("city") ?? "";
-const initialCity = summaries.some((p) => p.city === requestedCity)
-  ? requestedCity
-  : "";
+const requested = Astro.url.searchParams.get('service') ?? '';
+const initialService = SERVICES.some((s) => s.slug === requested) ? requested : '';
+const requestedCity = Astro.url.searchParams.get('city') ?? '';
+const initialCity = summaries.some((p) => p.city === requestedCity) ? requestedCity : '';
 ---
 
 <PublicLayout
   title={`Roofing Projects | ${config.company_name}`}
   description={`Recent roof replacements, repairs and storm damage restorations completed by ${config.company_name}.`}
   config={config}
-  jsonLd={[
-    breadcrumbLd(
-      [
-        { name: "Home", path: "/" },
-        { name: "Projects", path: "/portfolio" },
-      ],
-      Astro.site!,
-    ),
-  ]}
+  jsonLd={[breadcrumbLd([{ name: 'Home', path: '/' }, { name: 'Projects', path: '/portfolio' }], Astro.site!)]}
 >
   <section class="mx-auto max-w-6xl px-6 py-20">
-    <h1 class="max-w-3xl text-4xl font-extrabold leading-tight sm:text-5xl">
-      Our work
-    </h1>
-    <p class="mt-5 max-w-2xl text-lg text-slate-600">
-      Real homes, finished roofs. Filter by the kind of job you are considering.
-    </p>
+    <h1 class="max-w-3xl text-4xl font-extrabold leading-tight sm:text-5xl">Our work</h1>
+    <p class="mt-5 max-w-2xl text-lg text-slate-600">Real homes, finished roofs. Filter by the kind of job you are considering.</p>
     <div class="mt-12">
       {
         summaries.length > 0 ? (
-          <PortfolioFilter
-            client:load
-            projects={summaries}
-            services={SERVICE_OPTIONS}
-            initialService={initialService}
-            initialCity={initialCity}
-          />
+          <PortfolioFilter client:load projects={summaries} services={SERVICE_OPTIONS} initialService={initialService} initialCity={initialCity} />
         ) : (
-          <p class="rounded-xl bg-slate-50 p-8 text-slate-600">
-            Projects are coming soon.
-          </p>
+          <p class="rounded-xl bg-slate-50 p-8 text-slate-600">Projects are coming soon.</p>
         )
       }
     </div>

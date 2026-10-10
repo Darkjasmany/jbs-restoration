@@ -1,29 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  /* Fuente principal Gotham SSm A */
+  /* Fuente principal Ghotham SSm A */
   --font-sans:
     "Gotham SSm A", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, sans-serif;
 
-  /* JBS Restoration — Vino Rojizo (primario), Blanco Puro (fondo), Dorado Plano (acento secundario) */
-  --color-ink-900: #3c0f19;
-  --color-ink-800: #4a1420;
-  --color-ink-700: #561724;
+  /* Colores personalizados */
+  --color-ink-900: #101a24;
+  --color-ink-800: #17232f;
+  --color-ink-700: #22323f;
 
-  --color-brand-50: #fbeef0;
-  --color-brand-100: #f3d3d9;
-  --color-brand-500: #7a2234;
-  --color-brand-600: #561724;
-  --color-brand-700: #420f1a;
-  --color-brand-900: #2b0a11;
-
-  --color-gold-50: #faf6ef;
-  --color-gold-100: #f1e6d2;
-  --color-gold-400: #d2b687;
-  --color-gold-500: #bf9e6a;
-  --color-gold-600: #a3834f;
-  --color-gold-700: #7d6440;
+  --color-brand-50: #fdf2ef;
+  --color-brand-100: #fbe0d9;
+  --color-brand-500: #d4482d;
+  --color-brand-600: #b3341f;
+  --color-brand-700: #8f2817;
+  --color-brand-900: #4a150c;
 }
 
 /* ── SELF-HOSTED FONTS (GOTHAM) ── */

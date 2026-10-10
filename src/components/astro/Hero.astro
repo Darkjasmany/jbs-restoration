@@ -1,28 +1,21 @@
 ---
-import type { SiteConfig } from "../../lib/types";
-import { toTel } from "../../lib/utils";
+import type { SiteConfig } from '../../lib/types';
 
 interface Props {
   config: SiteConfig;
 }
 
 const { config } = Astro.props;
-// la doble negación (!!) se utiliza para convertir un valor en un booleano. En este caso, se está verificando si config.hero_video_url tiene un valor "truthy" (es decir, no es null, undefined, 0, "", etc.). Si tiene un valor "truthy", la expresión !!config.hero_video_url devolverá true; de lo contrario, devolverá false.
-// const hasVideo = config.hero_type === 'video' && !!config.hero_video_url;
-// otra Opción: Usando la función Boolean() (Haciendo casting explícito)
-const hasVideo = config.hero_type === "video" && Boolean(config.hero_video_url);
-const telHref = toTel(config.phone);
+const hasVideo = config.hero_type === 'video' && !!config.hero_video_url;
+const telHref = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, '')}` : null;
 ---
 
-<section
-  class="relative isolate flex min-h-[85svh] items-end overflow-hidden bg-ink-900 text-white"
-  aria-labelledby="hero-title"
->
+<section class="relative isolate flex min-h-[85svh] items-end overflow-hidden bg-ink-900 text-white" aria-labelledby="hero-title">
   {
     config.hero_poster_url && (
       <img
         src={config.hero_poster_url}
-        alt="hero_poster_url"
+        alt=""
         width="1920"
         height="1080"
         fetchpriority="high"
@@ -34,7 +27,6 @@ const telHref = toTel(config.phone);
   {
     hasVideo && (
       <video
-        id="hero_video"
         data-hero-src={config.hero_video_url}
         muted
         loop
@@ -46,32 +38,12 @@ const telHref = toTel(config.phone);
       />
     )
   }
-
-  <div
-    class="absolute inset-0 -z-[5] bg-gradient-to-t from-ink-900/90 via-ink-900/45 to-ink-900/20"
-    aria-hidden="true"
-  >
-  </div>
+  <div class="absolute inset-0 -z-[5] bg-gradient-to-t from-ink-900/90 via-ink-900/45 to-ink-900/20" aria-hidden="true"></div>
 
   <div class="mx-auto w-full max-w-6xl px-6 pb-16 pt-32 sm:pb-24">
-    {
-      config.tagline && (
-        <p class="mb-3 text-base font-medium text-white/80">{config.tagline}</p>
-      )
-    }
-    <h1
-      id="hero-title"
-      class="max-w-3xl text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl"
-    >
-      {config.hero_title}
-    </h1>
-    {
-      config.hero_subtitle && (
-        <p class="mt-5 max-w-xl text-lg leading-relaxed text-white/85">
-          {config.hero_subtitle}
-        </p>
-      )
-    }
+    {config.tagline && <p class="mb-3 text-base font-medium text-white/80">{config.tagline}</p>}
+    <h1 id="hero-title" class="max-w-3xl text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl">{config.hero_title}</h1>
+    {config.hero_subtitle && <p class="mt-5 max-w-xl text-lg leading-relaxed text-white/85">{config.hero_subtitle}</p>}
     <div class="mt-9 flex flex-wrap gap-3">
       <a
         href="/contact"
@@ -83,7 +55,7 @@ const telHref = toTel(config.phone);
         telHref && (
           <a
             href={telHref}
-            class="rounded-lg border border-white/50 px-6 py-3 font-semibold text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            class="rounded-lg border border-gold-500 px-6 py-3 font-semibold text-gold-400 transition hover:bg-gold-500 hover:text-ink-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
             Call {config.phone}
           </a>
@@ -94,30 +66,16 @@ const telHref = toTel(config.phone);
 </section>
 
 <script>
-  const video = document.querySelector<HTMLVideoElement>("#hero_video");
-  // Accede a la API del navegador navigator.connection (Network Information API).
-  // saveData: Algunos navegadores (como Chrome en Android) permiten al usuario activar la opción "Ahorro de datos". Esta propiedad devuelve true si la opción está activa.
-  const connection = (
-    navigator as Navigator & { connection?: { saveData?: boolean } }
-  ).connection;
-
+  const video = document.querySelector<HTMLVideoElement>('video[data-hero-src]');
+  const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
   const canPlay =
-    matchMedia("(min-width: 768px)").matches &&
-    !matchMedia("(prefers-reduced-motion: reduce)").matches && //Verifica la configuración del sistema operativo del usuario. Si el usuario activó la opción "Reducir movimiento" (por accesibilidad, mareos o epilepsia), el video no se reproducirá.
-    !connection?.saveData; // El usuario no debe tener activa la opción de ahorro de datos.
+    matchMedia('(min-width: 768px)').matches &&
+    !matchMedia('(prefers-reduced-motion: reduce)').matches &&
+    !connection?.saveData;
 
   if (video && canPlay) {
-    // A. Escucha la reproducción inicial
-    video.addEventListener(
-      "playing",
-      () => video.classList.remove("opacity-0"),
-      { once: true },
-    );
-
-    // B. Asigna la URL del video
-    video.src = video.dataset.heroSrc ?? "";
-
-    // C. Inicia la reproducción
+    video.addEventListener('playing', () => video.classList.remove('opacity-0'), { once: true });
+    video.src = video.dataset.heroSrc ?? '';
     video.play().catch(() => {});
   }
 </script>

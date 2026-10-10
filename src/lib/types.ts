@@ -1,16 +1,10 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[];
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
-export type ProjectStatus = "draft" | "published";
-export type MediaType = "image" | "video";
-export type MediaRole = "gallery" | "before" | "after" | "cover";
-export type HeroMediaType = "video" | "image";
-export type LeadStatus = "new" | "contacted" | "quoted" | "won" | "lost";
+export type ProjectStatus = 'draft' | 'published';
+export type MediaType = 'image' | 'video';
+export type MediaRole = 'gallery' | 'before' | 'after' | 'cover';
+export type HeroMediaType = 'video' | 'image';
+export type LeadStatus = 'new' | 'contacted' | 'quoted' | 'won' | 'lost';
 
 export type AdminUser = {
   user_id: string;
@@ -117,56 +111,30 @@ export type ProjectSummary = {
   cover_height: number | null;
 };
 
-/**
- * Este tipo personalizado recibe un tipo original (T) y una lista de sus propiedades (K), y convierte solo esas propiedades en opcionales. Lo hace en tres pasos:
- * Omit<T, K>: Toma el tipo original y elimina las propiedades K. Lo que queda sigue siendo obligatorio.
- * Partial<Pick<T, K>>: Toma solo las propiedades K y las convierte en opcionales (les añade el ?).
- * &: Une ambas partes.
- */
 type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
-export type ProjectInsert = Optional<
-  Project,
-  Exclude<keyof Project, "slug" | "title">
->;
-export type ProjectMediaInsert = Optional<
-  ProjectMedia,
-  Exclude<keyof ProjectMedia, "project_id" | "storage_path" | "url">
->;
-export type TestimonialInsert = Optional<
-  Testimonial,
-  Exclude<keyof Testimonial, "author_name" | "content">
->;
-export type LeadInsert = Optional<Lead, Exclude<keyof Lead, "name">>;
-export type AdminUserInsert = Optional<AdminUser, "full_name" | "created_at">;
+export type ProjectInsert = Optional<Project, Exclude<keyof Project, 'slug' | 'title'>>;
+export type ProjectMediaInsert = Optional<ProjectMedia, Exclude<keyof ProjectMedia, 'project_id' | 'storage_path' | 'url'>>;
+export type TestimonialInsert = Optional<Testimonial, Exclude<keyof Testimonial, 'author_name' | 'content'>>;
+export type LeadInsert = Optional<Lead, Exclude<keyof Lead, 'name'>>;
+export type AdminUserInsert = Optional<AdminUser, 'full_name' | 'created_at'>;
 
-// Mapeo del Schema de la BD
 export type Database = {
   public: {
     Tables: {
-      admin_users: {
-        Row: AdminUser;
-        Insert: AdminUserInsert;
-        Update: Partial<AdminUser>;
-        Relationships: [];
-      };
-      projects: {
-        Row: Project;
-        Insert: ProjectInsert;
-        Update: Partial<Project>;
-        Relationships: [];
-      };
+      admin_users: { Row: AdminUser; Insert: AdminUserInsert; Update: Partial<AdminUser>; Relationships: [] };
+      projects: { Row: Project; Insert: ProjectInsert; Update: Partial<Project>; Relationships: [] };
       project_media: {
         Row: ProjectMedia;
         Insert: ProjectMediaInsert;
         Update: Partial<ProjectMedia>;
         Relationships: [
           {
-            foreignKeyName: "project_media_project_id_fkey";
-            columns: ["project_id"];
+            foreignKeyName: 'project_media_project_id_fkey';
+            columns: ['project_id'];
             isOneToOne: false;
-            referencedRelation: "projects";
-            referencedColumns: ["id"];
+            referencedRelation: 'projects';
+            referencedColumns: ['id'];
           },
         ];
       };
@@ -176,34 +144,21 @@ export type Database = {
         Update: Partial<Testimonial>;
         Relationships: [
           {
-            foreignKeyName: "testimonials_project_id_fkey";
-            columns: ["project_id"];
+            foreignKeyName: 'testimonials_project_id_fkey';
+            columns: ['project_id'];
             isOneToOne: false;
-            referencedRelation: "projects";
-            referencedColumns: ["id"];
+            referencedRelation: 'projects';
+            referencedColumns: ['id'];
           },
         ];
       };
-      site_config: {
-        Row: SiteConfig;
-        Insert: Partial<SiteConfig>;
-        Update: Partial<SiteConfig>;
-        Relationships: [];
-      };
-      leads: {
-        Row: Lead;
-        Insert: LeadInsert;
-        Update: Partial<Lead>;
-        Relationships: [];
-      };
+      site_config: { Row: SiteConfig; Insert: Partial<SiteConfig>; Update: Partial<SiteConfig>; Relationships: [] };
+      leads: { Row: Lead; Insert: LeadInsert; Update: Partial<Lead>; Relationships: [] };
     };
     Views: { [_ in never]: never };
     Functions: {
       is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
-      replace_project_media: {
-        Args: { p_project_id: string; p_media: Json };
-        Returns: undefined;
-      };
+      replace_project_media: { Args: { p_project_id: string; p_media: Json }; Returns: undefined };
     };
     Enums: {
       project_status: ProjectStatus;

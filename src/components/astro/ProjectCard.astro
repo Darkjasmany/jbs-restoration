@@ -1,6 +1,6 @@
 ---
-import type { ProjectSummary } from "../../lib/types";
-import { serviceName } from "../../lib/services";
+import type { ProjectSummary } from '../../lib/types';
+import { serviceName } from '../../lib/services';
 
 interface Props {
   project: ProjectSummary;
@@ -8,16 +8,11 @@ interface Props {
 }
 
 const { project, wide = false } = Astro.props;
-const place = [project.city, project.state].filter(Boolean).join(", ");
+const place = [project.city, project.state].filter(Boolean).join(', ');
 ---
 
-<a
-  href={`/portfolio/${project.slug}`}
-  class:list={["group block", wide && "lg:col-span-2"]}
->
-  <div
-    class="aspect-[4/3] overflow-hidden rounded-lg bg-slate-200 lg:aspect-auto lg:h-[22rem]"
-  >
+<a href={`/portfolio/${project.slug}`} class:list={['group block', wide && 'lg:col-span-2']}>
+  <div class="aspect-[4/3] overflow-hidden rounded-lg bg-slate-200 lg:aspect-auto lg:h-[22rem]">
     {
       project.cover_url && (
         <img
@@ -32,10 +27,6 @@ const place = [project.city, project.state].filter(Boolean).join(", ");
       )
     }
   </div>
-  <h3 class="mt-3 text-lg font-bold transition group-hover:text-brand-600">
-    {project.title}
-  </h3>
-  <p class="text-sm text-slate-600">
-    {[serviceName(project.service_type), place].filter(Boolean).join(" · ")}
-  </p>
+  <h3 class="mt-3 text-lg font-bold transition group-hover:text-brand-600">{project.title}</h3>
+  <p class="text-sm text-slate-600">{[serviceName(project.service_type), place].filter(Boolean).join(' · ')}</p>
 </a>

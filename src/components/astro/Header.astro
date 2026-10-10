@@ -1,7 +1,5 @@
 ---
-import { dataNav } from "../../data/dataNav";
 import type { SiteConfig } from "../../lib/types";
-import { toTel } from "../../lib/utils";
 
 interface Props {
   config: SiteConfig;
@@ -10,9 +8,14 @@ interface Props {
 
 const { config, overlay = false } = Astro.props;
 const path = Astro.url.pathname;
+const nav = [
+  { href: "/services", label: "Services" },
+  { href: "/portfolio", label: "Projects" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+];
 const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
-
-const tel = toTel(config.phone);
+const tel = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, "")}` : null;
 ---
 
 <header
@@ -44,7 +47,7 @@ const tel = toTel(config.phone);
       aria-label="Main"
     >
       {
-        dataNav.map((item) => (
+        nav.map((item) => (
           <a
             href={item.href}
             aria-current={isActive(item.href) ? "page" : undefined}
@@ -76,8 +79,6 @@ const tel = toTel(config.phone);
           </a>
         )
       }
-
-      <!-- Menú desplegable -->
       <details class="relative md:hidden">
         <summary
           class="cursor-pointer list-none rounded-lg px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-slate-400/60 [&::-webkit-details-marker]:hidden"
@@ -88,7 +89,7 @@ const tel = toTel(config.phone);
           aria-label="Mobile"
         >
           {
-            dataNav.map((item) => (
+            nav.map((item) => (
               <a
                 href={item.href}
                 class="block rounded-lg px-4 py-3 font-medium hover:bg-white/10"

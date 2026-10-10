@@ -1,11 +1,11 @@
 ---
-import BaseLayout from "./BaseLayout.astro";
-import Header from "../components/astro/Header.astro";
-import Footer from "../components/astro/Footer.astro";
-import WhatsAppButton from "../components/react/public/WhatsAppButton";
-import { getSiteConfig } from "../lib/queries";
-import { localBusinessLd } from "../lib/seo";
-import type { SiteConfig } from "../lib/types";
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/astro/Header.astro';
+import Footer from '../components/astro/Footer.astro';
+import { WhatsAppButton } from '../components/react/public/WhatsAppButton';
+import { getSiteConfig } from '../lib/queries';
+import { localBusinessLd } from '../lib/seo';
+import type { SiteConfig } from '../lib/types';
 
 interface Props {
   title: string;
@@ -21,33 +21,12 @@ const config = provided ?? (await getSiteConfig(Astro.locals.supabase));
 const structured = [localBusinessLd(config, Astro.site!), ...jsonLd];
 ---
 
-<BaseLayout
-  {...seo}
-  image={seo.image ?? config.hero_poster_url}
-  jsonLd={structured}
->
-  <!-- Patrón estándar de accesibilidad web (A11y) para permitir a los usuarios navegar rápidamente al contenido principal -->
-  <a
-    href="#main"
-    class="sr-only z-50 rounded-md bg-white px-4 py-2 font-semibold text-ink-900 focus:not-sr-only focus:absolute focus:left-4 focus:top-4"
-    >Skip to content</a
-  >
-  <!-- Sin fondo de imagen o video -->
-  <!-- <Header config={config} /> -->
+<BaseLayout {...seo} image={seo.image ?? config.hero_poster_url} jsonLd={structured}>
+  <a href="#main" class="sr-only z-50 rounded-md bg-white px-4 py-2 font-semibold text-ink-900 focus:not-sr-only focus:absolute focus:left-4 focus:top-4">Skip to content</a>
   <Header config={config} overlay={overlay} />
   <main id="main">
     <slot />
   </main>
   <Footer config={config} />
-
-  {
-    config.whatsapp_number && (
-      <WhatsAppButton
-        client:idle
-        phone={config.whatsapp_number}
-        messages={config.whatsapp_messages}
-        companyName={config.company_name}
-      />
-    )
-  }
+  {config.whatsapp_number && <WhatsAppButton client:idle phone={config.whatsapp_number} messages={config.whatsapp_messages} companyName={config.company_name} />}
 </BaseLayout>

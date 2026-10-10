@@ -1,29 +1,16 @@
 ---
-import PublicLayout from "../layouts/PublicLayout.astro";
+import PublicLayout from '../layouts/PublicLayout.astro';
 
 Astro.response.status = 404;
 ---
 
-<PublicLayout
-  title="Page not found"
-  description="The page you are looking for does not exist."
->
+<PublicLayout title="Page not found" description="The page you are looking for does not exist.">
   <section class="mx-auto max-w-3xl px-6 py-32 text-center">
     <h1 class="text-4xl font-extrabold">We could not find that page.</h1>
-    <p class="mt-4 text-lg text-slate-600">
-      It may have moved or no longer exists.
-    </p>
+    <p class="mt-4 text-lg text-slate-600">It may have moved or no longer exists.</p>
     <div class="mt-8 flex flex-wrap justify-center gap-3">
-      <a
-        href="/"
-        class="rounded-lg bg-brand-600 px-6 py-3 font-semibold text-white hover:bg-brand-700"
-        >Back to home</a
-      >
-      <a
-        href="/portfolio"
-        class="rounded-lg border border-slate-300 px-6 py-3 font-semibold hover:bg-slate-50"
-        >See our work</a
-      >
+      <a href="/" class="rounded-lg bg-brand-600 px-6 py-3 font-semibold text-white hover:bg-brand-700">Back to home</a>
+      <a href="/portfolio" class="rounded-lg border border-slate-300 px-6 py-3 font-semibold hover:bg-slate-50">See our work</a>
     </div>
   </section>
 </PublicLayout>
