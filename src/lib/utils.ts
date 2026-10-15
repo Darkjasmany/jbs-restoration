@@ -25,6 +25,35 @@ export const validationError = (error: ZodError) =>
   );
 
 /**
+ * Ocultar el código de país y el prefijo de EEUU (ej. "+1 (917) 539-9904" → "(917) 539-9904"). El enlace tel: sigue usando el número completo.
+ */
+export const displayPhone = (phone: string) => {
+  if (!phone) return null;
+  return phone.replace(/^\+?1[\s-]*/, "").trim();
+};
+
+/**
+ * Convierte un número telefónico en un enlace ejecutable 'tel:'
+ */
+export const toTel = (phone: string | null | undefined) => {
+  if (!phone) return null;
+  const cleaned = phone.replace(/[^\d+]/g, "");
+  return cleaned ? `tel:${cleaned}` : null;
+};
+
+/** Resume una lista larga de ciudades ("16 towns across Connecticut") en vez de listarlas todas en una sola línea. */
+export const summarizeAreas = (
+  areas: string[],
+  region = "Connecticut",
+  max = 3,
+) =>
+  areas.length === 0
+    ? ""
+    : areas.length <= max
+      ? areas.join(", ")
+      : `${areas.length} towns across ${region}`;
+
+/**
  * Normaliza textos para convertirlos en URLs amigables (slugs)
  */
 export const slugify = (value: string) =>
@@ -35,15 +64,6 @@ export const slugify = (value: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 80);
-
-/**
- * Convierte un número telefónico en un enlace ejecutable 'tel:'
- */
-export const toTel = (phone: string | null | undefined) => {
-  if (!phone) return null;
-  const cleaned = phone.replace(/[^\d+]/g, "");
-  return cleaned ? `tel:${cleaned}` : null;
-};
 
 /**
  * Obtener fecha actual
