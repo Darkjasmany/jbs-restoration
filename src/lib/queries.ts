@@ -38,10 +38,37 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
 /** Video de relleno (gradiente generado) que se usa solo si hero_type='video' pero aún no se subió ningún video. */
 const FALLBACK_HERO_VIDEO = '/fallback-hero.mp4';
 
-export async function getSiteConfig(db: Client): Promise<SiteConfig> {
-  const { data } = await db.from('site_config').select('*').eq('id', 1).maybeSingle();
-  if (!data) return DEFAULT_SITE_CONFIG;
-  return data.hero_type === 'video' && !data.hero_video_url ? { ...data, hero_video_url: FALLBACK_HERO_VIDEO } : data;
+/**
+ * Memo SOLO para desarrollo.
+ *
+ * En dev, cambiar una sola letra hace que Astro recargue la página completa y
+ * vuelva a ejecutar SSR + middleware + estas consultas a Supabase (que es
+ * remoto: ~50–200 ms por query). Este cache evita repetir las mismas consultas
+ * entre recargas seguidas, así el HMR se siente mucho más rápido.
+ *
+ * En producción NO se aplica: cada request consulta Supabase y el HTML se
+ * cachea en el edge (s-maxage=60), de modo que los cambios del admin se
+ * reflejan de inmediato.
+ */
+const DEV_TTL_MS = 15_000;
+const devCache = new Map<string, { at: number; value: unknown }>();
+
+function devMemo<T>(key: string, load: () => Promise<T>): Promise<T> {
+  if (!import.meta.env.DEV) return load();
+  const hit = devCache.get(key);
+  if (hit && Date.now() - hit.at < DEV_TTL_MS) return Promise.resolve(hit.value as T);
+  return load().then((value) => {
+    devCache.set(key, { at: Date.now(), value });
+    return value;
+  });
+}
+
+export function getSiteConfig(db: Client): Promise<SiteConfig> {
+  return devMemo('site_config', async () => {
+    const { data } = await db.from('site_config').select('*').eq('id', 1).maybeSingle();
+    if (!data) return DEFAULT_SITE_CONFIG;
+    return data.hero_type === 'video' && !data.hero_video_url ? { ...data, hero_video_url: FALLBACK_HERO_VIDEO } : data;
+  });
 }
 
 const sortMedia = (p: ProjectWithMedia): ProjectWithMedia => ({
@@ -72,33 +99,39 @@ export function toSummary(p: ProjectWithMedia): ProjectSummary {
 
 type ProjectQuery = { limit?: number; featured?: boolean; service?: string; excludeId?: string };
 
-export async function getPublishedProjects(db: Client, opts: ProjectQuery = {}): Promise<ProjectWithMedia[]> {
-  let query = db.from('projects').select('*, project_media(*)').eq('status', 'published');
-  if (opts.featured) query = query.eq('is_featured', true);
-  if (opts.service) query = query.eq('service_type', opts.service);
-  if (opts.excludeId) query = query.neq('id', opts.excludeId);
-  const { data } = await query
-    .order('sort_order', { ascending: true })
-    .order('completed_on', { ascending: false, nullsFirst: false })
-    .order('created_at', { ascending: false })
-    .limit(opts.limit ?? 100);
-  return ((data ?? []) as unknown as ProjectWithMedia[]).map(sortMedia);
+export function getPublishedProjects(db: Client, opts: ProjectQuery = {}): Promise<ProjectWithMedia[]> {
+  return devMemo(`projects:${JSON.stringify(opts)}`, async () => {
+    let query = db.from('projects').select('*, project_media(*)').eq('status', 'published');
+    if (opts.featured) query = query.eq('is_featured', true);
+    if (opts.service) query = query.eq('service_type', opts.service);
+    if (opts.excludeId) query = query.neq('id', opts.excludeId);
+    const { data } = await query
+      .order('sort_order', { ascending: true })
+      .order('completed_on', { ascending: false, nullsFirst: false })
+      .order('created_at', { ascending: false })
+      .limit(opts.limit ?? 100);
+    return ((data ?? []) as unknown as ProjectWithMedia[]).map(sortMedia);
+  });
 }
 
-export async function getProjectBySlug(db: Client, slug: string): Promise<ProjectWithMedia | null> {
-  const { data } = await db.from('projects').select('*, project_media(*)').eq('slug', slug).eq('status', 'published').maybeSingle();
-  return data ? sortMedia(data as unknown as ProjectWithMedia) : null;
+export function getProjectBySlug(db: Client, slug: string): Promise<ProjectWithMedia | null> {
+  return devMemo(`project:${slug}`, async () => {
+    const { data } = await db.from('projects').select('*, project_media(*)').eq('slug', slug).eq('status', 'published').maybeSingle();
+    return data ? sortMedia(data as unknown as ProjectWithMedia) : null;
+  });
 }
 
-export async function getTestimonials(db: Client, limit = 12): Promise<Testimonial[]> {
-  const { data } = await db
-    .from('testimonials')
-    .select('*')
-    .eq('is_published', true)
-    .order('sort_order', { ascending: true })
-    .order('created_at', { ascending: false })
-    .limit(limit);
-  return data ?? [];
+export function getTestimonials(db: Client, limit = 12): Promise<Testimonial[]> {
+  return devMemo(`testimonials:${limit}`, async () => {
+    const { data } = await db
+      .from('testimonials')
+      .select('*')
+      .eq('is_published', true)
+      .order('sort_order', { ascending: true })
+      .order('created_at', { ascending: false })
+      .limit(limit);
+    return data ?? [];
+  });
 }
 
 export const formatMonthYear = (iso: string | null) =>

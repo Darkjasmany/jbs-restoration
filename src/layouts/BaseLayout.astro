@@ -2,6 +2,9 @@
 import "../styles/global.css";
 import SEO from "../components/astro/SEO.astro";
 
+// Roboto (Google Fonts), variable 100–900 en un solo archivo servido por Google.
+const robotoHref = "https://fonts.googleapis.com/css2?family=Roboto:wght@100..900&display=swap";
+
 interface Props {
   title: string;
   description?: string;
@@ -18,6 +21,9 @@ const seo = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href={robotoHref} />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <SEO {...seo} />
     <slot name="head" />
