@@ -6,6 +6,7 @@ type Props = {
   services: [string, string][];
   initialService?: string;
   whatsappNumber?: string | null;
+  compact?: boolean;
 };
 
 type FieldErrors = Partial<
@@ -14,11 +15,14 @@ type FieldErrors = Partial<
 
 const inputCls =
   "mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500/30";
+const compactInputCls =
+  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-ink-900 focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500/30";
 
 export function ContactForm({
   services,
   initialService = "",
   whatsappNumber,
+  compact = false,
 }: Props) {
   const [startedAt] = useState(() => Date.now());
   const [values, setValues] = useState({
@@ -49,14 +53,17 @@ export function ContactForm({
         headers: { "content-type": "application/json" },
         body: JSON.stringify(payload),
       });
+
       const body = (await res.json().catch(() => ({}))) as {
         error?: string;
         issues?: { path: (string | number)[]; message: string }[];
       };
+
       if (res.ok) {
         setStatus("sent");
         return;
       }
+
       if (body.issues) {
         const next: FieldErrors = {};
         for (const issue of body.issues) {
@@ -78,12 +85,14 @@ export function ContactForm({
     return (
       <div
         role="status"
-        className="rounded-xl bg-emerald-50 p-6 ring-1 ring-emerald-200"
+        className={`rounded-xl bg-emerald-50 ring-1 ring-emerald-200 ${compact ? "p-5" : "p-6"}`}
       >
-        <h3 className="text-xl font-bold text-emerald-900">
+        <h3
+          className={`font-bold text-emerald-900 ${compact ? "text-lg" : "text-xl"}`}
+        >
           Thanks, we got your request.
         </h3>
-        <p className="mt-2 text-emerald-900/80">
+        <p className="mt-2 text-sm text-emerald-900/80">
           We will contact you shortly to schedule your free estimate.
         </p>
         {wa && (
@@ -91,7 +100,7 @@ export function ContactForm({
             href={`https://wa.me/${wa}?text=${encodeURIComponent("Hi! I just sent a request through your website.")}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 inline-block font-semibold text-emerald-900 underline underline-offset-4"
+            className="mt-3 inline-block text-sm font-semibold text-emerald-900 underline underline-offset-4"
           >
             Need it faster? Message us on WhatsApp
           </a>
@@ -109,6 +118,97 @@ export function ContactForm({
         {errors[key]}
       </span>
     ) : null;
+
+  if (compact) {
+    return (
+      <form onSubmit={onSubmit} noValidate className="space-y-3">
+        <div>
+          <label className="sr-only" htmlFor="hero-name">
+            Name
+          </label>
+          <input
+            id="hero-name"
+            required
+            placeholder="Full name"
+            autoComplete="name"
+            maxLength={100}
+            value={values.name}
+            onChange={set("name")}
+            aria-invalid={!!errors.name}
+            className={compactInputCls}
+          />
+          {err("name")}
+        </div>
+        <div>
+          <label className="sr-only" htmlFor="hero-phone">
+            Phone
+          </label>
+          <input
+            id="hero-phone"
+            required
+            type="tel"
+            placeholder="Phone"
+            autoComplete="tel"
+            maxLength={30}
+            value={values.phone}
+            onChange={set("phone")}
+            aria-invalid={!!errors.phone}
+            className={compactInputCls}
+          />
+          {err("phone")}
+        </div>
+        <div>
+          <label className="sr-only" htmlFor="hero-service">
+            Service needed
+          </label>
+          <select
+            id="hero-service"
+            value={values.service}
+            onChange={set("service")}
+            className={compactInputCls}
+          >
+            <option value="">Service needed</option>
+            {services.map(([slug, name]) => (
+              <option key={slug} value={slug}>
+                {name}
+              </option>
+            ))}
+            <option value="other">Something else</option>
+          </select>
+          {err("service")}
+        </div>
+        <div
+          aria-hidden="true"
+          className="absolute -left-[9999px] h-0 w-0 overflow-hidden"
+        >
+          <label>
+            Website
+            <input
+              tabIndex={-1}
+              autoComplete="off"
+              value={values.website}
+              onChange={set("website")}
+            />
+          </label>
+        </div>
+        {formError && (
+          <p
+            role="alert"
+            className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700"
+          >
+            {formError}
+          </p>
+        )}
+        <Button
+          type="submit"
+          loading={status === "sending"}
+          className="w-full !bg-gold-500 !text-ink-900 hover:!bg-gold-400"
+        >
+          Get My Free Estimate
+        </Button>
+      </form>
+    );
+  }
 
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-5">
@@ -143,7 +243,6 @@ export function ContactForm({
       <label className="block font-medium">
         Email
         <input
-          required
           type="email"
           autoComplete="email"
           maxLength={160}
@@ -172,15 +271,14 @@ export function ContactForm({
         {err("service")}
       </label>
       <label className="block font-medium">
-        Tell us about the roof
+        Tell us what you need
         <textarea
-          required
           rows={5}
           maxLength={2000}
           value={values.message}
           onChange={set("message")}
           className={inputCls}
-          placeholder="Address, what you noticed, and when it started."
+          placeholder="Describe your project or the service you're looking for."
         />
         {err("message")}
       </label>

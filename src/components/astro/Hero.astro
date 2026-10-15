@@ -1,16 +1,28 @@
 ---
-import type { SiteConfig } from '../../lib/types';
+import { SERVICE_OPTIONS } from "../../lib/services";
+import type { SiteConfig } from "../../lib/types";
+import { displayPhone, toTel } from "../../lib/utils";
+import { ContactForm } from "../react/public/ContactForm";
 
 interface Props {
   config: SiteConfig;
 }
 
 const { config } = Astro.props;
-const hasVideo = config.hero_type === 'video' && !!config.hero_video_url;
-const telHref = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, '')}` : null;
+const hasVideo = config.hero_type === "video" && !!config.hero_video_url;
+const telHref = toTel(config.phone);
 ---
 
-<section class="relative isolate flex min-h-[85svh] items-end overflow-hidden bg-ink-900 text-white" aria-labelledby="hero-title">
+<section
+  class="relative
+  isolate
+  flex min-h-[85svh]
+  items-end
+  overflow-hidden
+  bg-ink-900
+  text-white"
+  aria-labelledby="hero-title"
+>
   {
     config.hero_poster_url && (
       <img
@@ -31,51 +43,102 @@ const telHref = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, '')}` : nu
         muted
         loop
         playsinline
-        preload="none"
+        preload="auto"
         aria-hidden="true"
         tabindex="-1"
         class="absolute inset-0 -z-10 h-full w-full object-cover opacity-0 transition-opacity duration-700 motion-reduce:hidden"
       />
     )
   }
-  <div class="absolute inset-0 -z-[5] bg-gradient-to-t from-ink-900/90 via-ink-900/45 to-ink-900/20" aria-hidden="true"></div>
 
-  <div class="mx-auto w-full max-w-6xl px-6 pb-16 pt-32 sm:pb-24">
-    {config.tagline && <p class="mb-3 text-base font-medium text-white/80">{config.tagline}</p>}
-    <h1 id="hero-title" class="max-w-3xl text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl">{config.hero_title}</h1>
-    {config.hero_subtitle && <p class="mt-5 max-w-xl text-lg leading-relaxed text-white/85">{config.hero_subtitle}</p>}
-    <div class="mt-9 flex flex-wrap gap-3">
-      <a
-        href="/contact"
-        class="rounded-lg bg-brand-600 px-6 py-3 font-semibold text-white transition hover:bg-brand-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-      >
-        {config.hero_cta_label}
-      </a>
+  <div
+    class="absolute inset-0 -z-[5] bg-gradient-to-t from-ink-900/95 via-ink-900/70 to-ink-900/40"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div
+    class="mx-auto grid w-full max-w-6xl gap-10 px-6 pb-16 pt-28 sm:pb-24 lg:grid-cols-[1fr_380px] lg:items-center lg:pt-40"
+  >
+    <div class="min-w-0">
       {
-        telHref && (
-          <a
-            href={telHref}
-            class="rounded-lg border border-gold-500 px-6 py-3 font-semibold text-gold-400 transition hover:bg-gold-500 hover:text-ink-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-          >
-            Call {config.phone}
-          </a>
+        config.tagline && (
+          <p class="mb-3 text-base font-medium text-white/80">
+            {config.tagline}
+          </p>
         )
       }
+      <h1
+        id="hero-title"
+        class="max-w-xl text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl"
+      >
+        {config.hero_title}
+      </h1>
+      {
+        config.hero_subtitle && (
+          <p class="mt-5 max-w-xl text-lg leading-relaxed text-white/85">
+            {config.hero_subtitle}
+          </p>
+        )
+      }
+      <div class="mt-9 flex flex-wrap gap-3">
+        <a
+          href="/contact"
+          class="rounded-lg bg-gold-500 px-6 py-3 font-bold text-ink-900 transition hover:bg-gold-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        >
+          {config.hero_cta_label}
+        </a>
+        {
+          telHref && (
+            <a
+              href={telHref}
+              class="rounded-lg border border-white/50 px-6 py-3 font-semibold text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            >
+              Call {displayPhone(config.phone!)}
+            </a>
+          )
+        }
+      </div>
+    </div>
+
+    <div class="rounded-2xl bg-white p-6 text-ink-900 shadow-2xl lg:p-7">
+      <p class="text-xl font-extrabold leading-tight">
+        Get Your Free <span class="text-brand-600">Roof Estimate</span>
+      </p>
+      <p class="mt-1 text-sm text-slate-600">
+        No obligation. We'll call you back the same day.
+      </p>
+      <div class="mt-4">
+        <ContactForm
+          client:visible
+          compact
+          services={SERVICE_OPTIONS}
+          whatsappNumber={config.whatsapp_number}
+        />
+      </div>
     </div>
   </div>
 </section>
 
 <script>
-  const video = document.querySelector<HTMLVideoElement>('video[data-hero-src]');
-  const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+  const video = document.querySelector<HTMLVideoElement>(
+    "video[data-hero-src]",
+  );
+  const connection = (
+    navigator as Navigator & { connection?: { saveData?: boolean } }
+  ).connection;
   const canPlay =
-    matchMedia('(min-width: 768px)').matches &&
-    !matchMedia('(prefers-reduced-motion: reduce)').matches &&
+    matchMedia("(min-width: 768px)").matches &&
+    !matchMedia("(prefers-reduced-motion: reduce)").matches &&
     !connection?.saveData;
 
   if (video && canPlay) {
-    video.addEventListener('playing', () => video.classList.remove('opacity-0'), { once: true });
-    video.src = video.dataset.heroSrc ?? '';
+    video.addEventListener(
+      "playing",
+      () => video.classList.remove("opacity-0"),
+      { once: true },
+    );
+    video.src = video.dataset.heroSrc ?? "";
     video.play().catch(() => {});
   }
 </script>
