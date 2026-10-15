@@ -14,13 +14,7 @@ const telHref = toTel(config.phone);
 ---
 
 <section
-  class="relative
-  isolate
-  flex min-h-[85svh]
-  items-end
-  overflow-hidden
-  bg-ink-900
-  text-white"
+  class="relative isolate flex min-h-[85vh] items-center overflow-hidden bg-gradient-to-b from-[#4a1420] via-[#3c0f19] to-[#2b0a11] text-white pt-28 pb-20 lg:pt-36 lg:pb-28 border-t border-[#561724]"
   aria-labelledby="hero-title"
 >
   {
@@ -32,7 +26,7 @@ const telHref = toTel(config.phone);
         height="1080"
         fetchpriority="high"
         decoding="async"
-        class="absolute inset-0 -z-20 h-full w-full object-cover"
+        class="absolute inset-0 -z-20 h-full w-full object-cover opacity-25 mix-blend-overlay"
       />
     )
   }
@@ -51,48 +45,38 @@ const telHref = toTel(config.phone);
     )
   }
 
+  {/* Contenedor principal con separación adecuada respecto al header fijo */}
   <div
-    class="absolute inset-0 -z-[5] bg-gradient-to-t from-ink-900/95 via-ink-900/70 to-ink-900/40"
-    aria-hidden="true"
+    class="mx-auto grid w-full max-w-7xl gap-12 px-6 lg:px-10 lg:grid-cols-12 lg:items-center relative z-10"
   >
-  </div>
-
-  <div
-    class="mx-auto grid w-full max-w-6xl gap-10 px-6 pb-16 pt-28 sm:pb-24 lg:grid-cols-[1fr_380px] lg:items-center lg:pt-40"
-  >
-    <div class="min-w-0">
-      {
-        config.tagline && (
-          <p class="mb-3 text-base font-medium text-white/80">
-            {config.tagline}
-          </p>
-        )
-      }
+    {/* Columna Izquierda: Títulos y descripciones con buen margen */}
+    <div class="lg:col-span-7 space-y-6">
       <h1
         id="hero-title"
-        class="max-w-xl text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl"
+        class="text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.08] tracking-tight"
       >
-        {config.hero_title}
+        The Difference Is in <span class="text-[#bf9e6a]">The Details</span>
       </h1>
-      {
-        config.hero_subtitle && (
-          <p class="mt-5 max-w-xl text-lg leading-relaxed text-white/85">
-            {config.hero_subtitle}
-          </p>
-        )
-      }
-      <div class="mt-9 flex flex-wrap gap-3">
+
+      <p
+        class="max-w-xl text-lg sm:text-xl leading-relaxed text-slate-200 font-normal opacity-90"
+      >
+        Professional Roofing, Siding and Restoration Services. Building
+        Confidence Into Every Project.
+      </p>
+
+      <div class="flex flex-wrap items-center gap-4 pt-4">
         <a
           href="/contact"
-          class="rounded-lg bg-gold-500 px-6 py-3 font-bold text-ink-900 transition hover:bg-gold-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          class="rounded-lg bg-[#bf9e6a] px-7 py-3.5 font-extrabold uppercase tracking-wider text-[#3c0f19] transition-transform hover:bg-[#d2b687] active:scale-95 shadow-lg"
         >
-          {config.hero_cta_label}
+          Get a Free Estimate
         </a>
         {
           telHref && (
             <a
               href={telHref}
-              class="rounded-lg border border-white/50 px-6 py-3 font-semibold text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              class="rounded-lg border-2 border-white/50 px-7 py-3.5 font-bold text-white transition hover:bg-white/10"
             >
               Call {displayPhone(config.phone!)}
             </a>
@@ -101,20 +85,25 @@ const telHref = toTel(config.phone);
       </div>
     </div>
 
-    <div class="rounded-2xl bg-white p-6 text-ink-900 shadow-2xl lg:p-7">
-      <p class="text-xl font-extrabold leading-tight">
-        Get Your Free <span class="text-brand-600">Roof Estimate</span>
-      </p>
-      <p class="mt-1 text-sm text-slate-600">
-        No obligation. We'll call you back the same day.
-      </p>
-      <div class="mt-4">
-        <ContactForm
-          client:visible
-          compact
-          services={SERVICE_OPTIONS}
-          whatsappNumber={config.whatsapp_number}
-        />
+    {/* Columna Derecha: Formulario Flotante */}
+    <div class="lg:col-span-5">
+      <div
+        class="rounded-2xl bg-white p-6 sm:p-8 text-[#3c0f19] shadow-2xl border border-slate-100"
+      >
+        <p class="text-2xl font-black leading-tight">
+          Get Your Free <span class="text-[#a3834f]">Roof Estimate</span>
+        </p>
+        <p class="mt-1 text-sm text-slate-600">
+          No obligation. We'll call you back the same day.
+        </p>
+        <div class="mt-5">
+          <ContactForm
+            client:visible
+            compact
+            services={SERVICE_OPTIONS}
+            whatsappNumber={config.whatsapp_number}
+          />
+        </div>
       </div>
     </div>
   </div>
