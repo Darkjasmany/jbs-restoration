@@ -28,7 +28,7 @@ const initialCity = summaries.some((p) => p.city === requestedCity) ? requestedC
     <div class="mt-12">
       {
         summaries.length > 0 ? (
-          <PortfolioFilter client:load projects={summaries} services={SERVICE_OPTIONS} initialService={initialService} initialCity={initialCity} />
+          <PortfolioFilter client:visible projects={summaries} services={SERVICE_OPTIONS} initialService={initialService} initialCity={initialCity} />
         ) : (
           <p class="rounded-xl bg-slate-50 p-8 text-slate-600">Projects are coming soon.</p>
         )

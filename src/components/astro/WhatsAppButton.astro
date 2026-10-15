@@ -1,0 +1,177 @@
+---
+import type { WhatsAppMessage } from "../../lib/types";
+
+interface Props {
+  phone: string;
+  messages: WhatsAppMessage[];
+  companyName?: string;
+}
+
+const { phone, messages, companyName = "us" } = Astro.props;
+const number = phone.replace(/\D/g, "");
+const valid = number.length >= 10;
+---
+
+{
+  valid && (
+    <div
+      id="wa-root"
+      data-number={number}
+      class="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-50 flex flex-col items-end gap-3 sm:right-6"
+    >
+      <div
+        id="wa-panel"
+        hidden
+        role="dialog"
+        aria-label={`Chat with ${companyName} on WhatsApp`}
+        class="w-[min(20rem,calc(100vw-2rem))] overflow-hidden rounded-2xl bg-white shadow-2xl ring-1 ring-black/10"
+      >
+        <div class="bg-emerald-700 px-4 py-3 text-white">
+          <p class="font-semibold">Chat with {companyName}</p>
+          <p class="text-sm text-emerald-50">
+            Pick a topic and we will open WhatsApp with the message ready.
+          </p>
+        </div>
+        <div class="space-y-2 p-3">
+          {messages.map((m) => (
+            <button
+              type="button"
+              data-wa-text={m.text}
+              data-wa-label={m.label}
+              class="block w-full rounded-lg border border-slate-200 px-3 py-2.5 text-left text-sm font-medium text-slate-800 transition hover:border-emerald-600 hover:bg-emerald-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-600"
+            >
+              {m.label}
+            </button>
+          ))}
+          <form data-wa-form class="flex gap-2 pt-1">
+            <label class="sr-only" for="wa-msg">
+              Write your own message
+            </label>
+            <input
+              id="wa-msg"
+              maxLength={300}
+              placeholder="Write your own message"
+              class="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/30"
+            />
+            <button
+              type="submit"
+              data-wa-send
+              disabled
+              class="rounded-lg bg-emerald-700 px-3 py-2 text-sm font-semibold text-white disabled:opacity-40"
+            >
+              Send
+            </button>
+          </form>
+        </div>
+      </div>
+      <button
+        id="wa-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="wa-panel"
+        aria-label="Chat on WhatsApp"
+        class="relative grid h-14 w-14 place-items-center rounded-full bg-emerald-600 text-white shadow-lg transition hover:bg-emerald-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
+      >
+        <span
+          id="wa-ping"
+          aria-hidden="true"
+          class="absolute inset-0 rounded-full bg-emerald-500/40 motion-safe:animate-ping [animation-iteration-count:3]"
+        >
+        </span>
+        <svg
+          viewBox="0 0 24 24"
+          width="26"
+          height="26"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          class="relative"
+        >
+          <path id="wa-icon" d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+        </svg>
+      </button>
+    </div>
+  )
+}
+
+<script>
+  type Gtag = (
+    command: "event",
+    name: string,
+    params: Record<string, string>,
+  ) => void;
+
+  const root = document.getElementById("wa-root");
+  if (root) {
+    const number = root.dataset.number ?? "";
+    const panel = document.getElementById("wa-panel") as HTMLDivElement;
+    const toggle = document.getElementById("wa-toggle") as HTMLButtonElement;
+    const icon = document.getElementById("wa-icon") as SVGPathElement;
+    const ping = document.getElementById("wa-ping") as HTMLSpanElement;
+    const form = root.querySelector("[data-wa-form]") as HTMLFormElement;
+    const input = document.getElementById("wa-msg") as HTMLInputElement;
+    const send = form.querySelector("[data-wa-send]") as HTMLButtonElement;
+
+    const CHAT_ICON = "M7.9 20A9 9 0 1 0 4 16.1L2 22Z";
+    const CLOSE_ICON = "M18 6 6 18M6 6l12 12";
+    let open = false;
+
+    const setOpen = (next: boolean) => {
+      open = next;
+      panel.hidden = !next;
+      ping.hidden = next;
+      toggle.setAttribute("aria-expanded", String(next));
+      toggle.setAttribute("aria-controls", next ? "wa-panel" : "");
+      toggle.setAttribute(
+        "aria-label",
+        next ? "Close WhatsApp chat" : "Chat on WhatsApp",
+      );
+      icon.setAttribute("d", next ? CLOSE_ICON : CHAT_ICON);
+    };
+
+    const start = (text: string, label: string) => {
+      (window as unknown as { gtag?: Gtag }).gtag?.("event", "whatsapp_click", {
+        label,
+      });
+      window.open(
+        `https://wa.me/${number}?text=${encodeURIComponent(text)}`,
+        "_blank",
+        "noopener,noreferrer",
+      );
+      setOpen(false);
+      input.value = "";
+      send.disabled = true;
+    };
+
+    toggle.addEventListener("click", () => setOpen(!open));
+
+    root
+      .querySelectorAll<HTMLButtonElement>("[data-wa-text]")
+      .forEach((btn) =>
+        btn.addEventListener("click", () =>
+          start(btn.dataset.waText ?? "", btn.dataset.waLabel ?? ""),
+        ),
+      );
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const text = input.value.trim();
+      if (text) start(text, "custom");
+    });
+
+    input.addEventListener("input", () => {
+      send.disabled = !input.value.trim();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && open) setOpen(false);
+    });
+
+    document.addEventListener("pointerdown", (event) => {
+      if (open && !root.contains(event.target as Node)) setOpen(false);
+    });
+  }
+</script>

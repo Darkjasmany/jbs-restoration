@@ -18,8 +18,19 @@ export default defineConfig({
   // Configuración del adaptador de Cloudflare Pages
   adapter: cloudfare(),
 
+  // Precarga en el cliente los enlaces del viewport para que la navegación
+  // entre páginas se sienta instantánea (no descarga nada que no se use).
+  prefetch: {
+    prefetchAll: false,
+    defaultStrategy: "viewport",
+  },
+
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      // Mantiene el JS de cada isla en chunks pequeños y cacheables.
+      cssCodeSplit: true,
+    },
   },
 
   integrations: [react()],

@@ -27,37 +27,29 @@
 }
 
 /* ── SELF-HOSTED FONTS (GOTHAM) ── */
-@font-face {
-  font-family: "Gotham SSm A";
-  font-style: normal;
-  font-display: swap;
-  font-weight: 400;
-  src: url("/fonts/gotham-book.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Gotham SSm A";
-  font-style: normal;
-  font-display: swap;
-  font-weight: 500;
-  src: url("/fonts/gotham-medium.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Gotham SSm A";
-  font-style: normal;
-  font-display: swap;
-  font-weight: 700;
-  src: url("/fonts/gotham-bold.woff2") format("woff2");
-}
-
-@font-face {
-  font-family: "Gotham SSm A";
-  font-style: normal;
-  font-display: swap;
-  font-weight: 800;
-  src: url("/fonts/gotham-black.woff2") format("woff2");
-}
+/*
+ * ⚠️ Los archivos /public/fonts/*.woff2 NO son fuentes: son páginas HTML
+ * (descargas fallidas) de ~260 KB cada una. Al declararlos con @font-face el
+ * navegador intentaba descargar ~1 MB de basura en cada visita y el texto caía
+ * siempre al fallback del sistema.
+ *
+ * Se desactivaron para dejar de malgastar red. Cuando tengas los .woff2 REALES
+ * de Gotham, reactiva las declaraciones y borra los archivos HTML actuales:
+ *
+ * @font-face {
+ *   font-family: "Gotham SSm A";
+ *   font-style: normal;
+ *   font-display: swap;
+ *   font-weight: 400;
+ *   src: url("/fonts/gotham-book.woff2") format("woff2");
+ * }
+ * …y así con book(400)/medium(500)/bold(700)/black(800).
+ *
+ * Recomendado: usa woff2 subseteados a latin con glyphhanger para bajar de
+ * ~250 KB a ~25-40 KB por peso.
+ *
+ * Mientras tanto, --font-sans ya resuelve a la pila del sistema.
+ */
 
 /* ── VIEW TRANSITIONS ── */
 ::view-transition-old(root),
