@@ -1,6 +1,7 @@
 ---
 import type { SiteConfig } from "../../lib/types";
 import { displayPhone, toTel } from "../../lib/utils";
+import UtilityBar from "./UtilityBar.astro";
 
 interface Props {
   config: SiteConfig;
@@ -19,7 +20,6 @@ const nav = [
 
 const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
 const tel = toTel(config.phone);
-const hasUtilityBar = Boolean(config.phone || config.email || config.address);
 
 // Separación limpia del nombre
 const words = config.company_name.trim().split(" ");
@@ -34,60 +34,8 @@ const name2 = words.slice(1).join(" ");
       : "relative z-40 border-b border-ink-900/10 bg-white text-ink-900",
   ]}
 >
-  {/* Barra superior de utilidad */}
-  {
-    hasUtilityBar && (
-      <div class="hidden md:block border-b border-[#561724] bg-[#2b0a11]">
-        <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-2 text-xs font-medium text-white/85">
-          <div class="flex items-center gap-6">
-            {config.phone && (
-              <a
-                href={tel!}
-                class="flex items-center gap-1.5 hover:text-[#bf9e6a] transition-colors"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  width="13"
-                  height="13"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-                </svg>
-                {displayPhone(config.phone)}
-              </a>
-            )}
-            {config.email && (
-              <a
-                href={`mailto:${config.email}`}
-                class="flex items-center gap-1.5 hover:text-[#bf9e6a] transition-colors"
-              >
-                <svg
-                  viewBox="0 0 24 24"
-                  width="13"
-                  height="13"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <rect x="2" y="4" width="20" height="16" rx="2" />
-                  <path d="m22 7-10 6L2 7" />
-                </svg>
-                {config.email}
-              </a>
-            )}
-          </div>
-        </div>
-      </div>
-    )
-  }
+  {/* Barra superior de utilidad limpia y profesional */}
+  <UtilityBar config={config} />
 
   {/* Header Principal */}
   <div
@@ -95,16 +43,18 @@ const name2 = words.slice(1).join(" ");
   >
     <!-- Logo basado en la Tarjeta de Presentación -->
     <a href="/" class="flex items-center gap-2 group">
-      {/* Isotipo / logo dorado (recortado al contenido, sin margenes transparentes) */}
+      {
+        /* Isotipo / logo dorado (recortado al contenido, sin margenes transparentes) */
+      }
       <img
         src="/favicon.png"
         alt=""
         width="51"
         height="56"
-        class="h-14 w-auto shrink-0"
+        class="h-14 w-auto shrink-0 object-contain"
       />
 
-      {/* Texto apilado exacto a la tarjeta: JBS + RESTORATION */}
+      {/* Texto apilado JBS + RESTORATION */}
       <div class="flex flex-col justify-center leading-none select-none">
         <span
           class="text-3xl font-black tracking-tight text-[#fbeef0] drop-shadow-sm"

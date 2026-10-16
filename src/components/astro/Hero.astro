@@ -14,9 +14,10 @@ const telHref = toTel(config.phone);
 ---
 
 <section
-  class="relative isolate flex min-h-[85vh] items-center overflow-hidden bg-gradient-to-b from-[#4a1420] via-[#3c0f19] to-[#2b0a11] text-white pt-32 pb-20 md:pt-44 lg:pb-28 border-t border-[#561724]"
+  class="relative isolate flex min-h-[85vh] items-center overflow-hidden bg-[#2b0a11] text-white pt-32 pb-20 md:pt-40 lg:pb-28 border-t border-[#561724]"
   aria-labelledby="hero-title"
 >
+  {/* 1. FOTO DE FONDO */}
   {
     config.hero_poster_url && (
       <img
@@ -26,10 +27,12 @@ const telHref = toTel(config.phone);
         height="1080"
         fetchpriority="high"
         decoding="async"
-        class="absolute inset-0 -z-20 h-full w-full object-cover opacity-25 mix-blend-overlay"
+        class="absolute inset-0 -z-20 h-full w-full object-cover object-center"
       />
     )
   }
+
+  {/* 2. VIDEO DE FONDO */}
   {
     hasVideo && (
       <video
@@ -45,21 +48,39 @@ const telHref = toTel(config.phone);
     )
   }
 
-  {/* Contenedor principal con separación adecuada respecto al header fijo */}
+  {
+    /* 3. NUEVO GRADIENTE INVERTIDO: Claro a la izquierda, oscuro a la derecha */
+  }
+  <div
+    class="absolute inset-0 -z-[5] bg-gradient-to-r from-transparent via-[#3c0f19]/40 via-40% to-[#2b0a11]/95"
+    aria-hidden="true"
+  >
+  </div>
+
+  {/* Sombra inferior suave */}
+  <div
+    class="absolute inset-x-0 bottom-0 h-24 -z-[4] bg-gradient-to-t from-[#2b0a11]/90 to-transparent"
+    aria-hidden="true"
+  >
+  </div>
+
+  {/* 4. CONTENIDO PRINCIPAL */}
   <div
     class="mx-auto grid w-full max-w-7xl gap-12 px-6 lg:px-10 lg:grid-cols-12 lg:items-center relative z-10"
   >
-    {/* Columna Izquierda: Títulos y descripciones con buen margen */}
+    {
+      /* Columna Izquierda: Textos con sombra ligera para destacar sobre la imagen clara */
+    }
     <div class="lg:col-span-7 space-y-6">
       <h1
         id="hero-title"
-        class="text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.08] tracking-tight"
+        class="text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.08] tracking-tight drop-shadow-md"
       >
         The Difference Is in <span class="text-[#bf9e6a]">The Details</span>
       </h1>
 
       <p
-        class="max-w-xl text-lg sm:text-xl leading-relaxed text-slate-200 font-normal opacity-90"
+        class="max-w-xl text-lg sm:text-xl leading-relaxed text-slate-100 font-normal drop-shadow"
       >
         Professional Roofing, Siding and Restoration Services. Building
         Confidence Into Every Project.
@@ -68,7 +89,7 @@ const telHref = toTel(config.phone);
       <div class="flex flex-wrap items-center gap-4 pt-4">
         <a
           href="/contact"
-          class="rounded-lg bg-[#bf9e6a] px-7 py-3.5 font-extrabold uppercase tracking-wider text-[#3c0f19] transition-transform hover:bg-[#d2b687] active:scale-95 shadow-lg"
+          class="rounded-lg bg-[#bf9e6a] px-7 py-3.5 font-extrabold uppercase tracking-wider text-[#3c0f19] transition-all hover:bg-[#d2b687] active:scale-95 shadow-xl hover:shadow-[#bf9e6a]/20"
         >
           Get a Free Estimate
         </a>
@@ -76,7 +97,7 @@ const telHref = toTel(config.phone);
           telHref && (
             <a
               href={telHref}
-              class="rounded-lg border-2 border-white/50 px-7 py-3.5 font-bold text-white transition hover:bg-white/10"
+              class="rounded-lg border-2 border-white/70 bg-[#3c0f19]/30 backdrop-blur-xs px-7 py-3.5 font-bold text-white transition hover:bg-white/20 shadow-md"
             >
               Call {displayPhone(config.phone!)}
             </a>
