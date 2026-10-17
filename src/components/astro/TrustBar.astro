@@ -1,0 +1,117 @@
+---
+const benefits = [
+  {
+    icon: "clipboard",
+    title: "Clear, written estimates",
+    text: "Understand the scope, materials and price before work begins.",
+  },
+  {
+    icon: "house",
+    title: "Respect for your property",
+    text: "Careful work with attention to the details that matter.",
+  },
+  {
+    icon: "messages",
+    title: "Clear communication",
+    text: "Know what to expect as your project moves forward.",
+  },
+  {
+    icon: "check",
+    title: "A thorough final walkthrough",
+    text: "Review the completed work and address your questions.",
+  },
+];
+---
+
+<section
+  aria-label="What you can expect from JBS Restoration"
+  class="border-y border-[#e8dfd4] bg-[#faf8f5]"
+>
+  <div
+    class="mx-auto grid max-w-7xl divide-y divide-[#e8dfd4] px-6 sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:px-10"
+  >
+    {
+      benefits.map((benefit, i) => (
+        <article
+          class:list={[
+            "flex items-start gap-4 py-6 sm:px-5 lg:px-6 lg:py-8",
+            i === 0 && "sm:pl-0",
+            i === 1 && "lg:border-l lg:border-[#e8dfd4]",
+            i === 2 && "sm:border-l sm:border-[#e8dfd4]",
+            i === 3 && "lg:border-l lg:border-[#e8dfd4]",
+          ]}
+        >
+          <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#3c0f19] text-[#d2b687]">
+            {benefit.icon === "clipboard" && (
+              <svg
+                viewBox="0 0 24 24"
+                class="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="5" y="4" width="14" height="17" rx="2" />
+                <path d="M9 4.5V3h6v1.5M8 10h8M8 14h8M8 18h4" />
+              </svg>
+            )}
+            {benefit.icon === "house" && (
+              <svg
+                viewBox="0 0 24 24"
+                class="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m3 11 9-8 9 8M5 10v10h14V10M9 20v-6h6v6" />
+              </svg>
+            )}
+            {benefit.icon === "messages" && (
+              <svg
+                viewBox="0 0 24 24"
+                class="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 8.7 3.9a8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z" />
+              </svg>
+            )}
+            {benefit.icon === "check" && (
+              <svg
+                viewBox="0 0 24 24"
+                class="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="9" />
+                <path d="m8 12 2.5 2.5L16 9" />
+              </svg>
+            )}
+          </div>
+
+          <div class="min-w-0">
+            <h2 class="text-sm font-extrabold leading-snug text-[#3c0f19]">
+              {benefit.title}
+            </h2>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              {benefit.text}
+            </p>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>
