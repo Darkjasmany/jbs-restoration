@@ -45,6 +45,27 @@ export type ProjectMedia = {
   created_at: string;
 };
 
+export type ServiceFaq = { q: string; a: string };
+
+export type Service = {
+  id: string;
+  slug: string;
+  name: string;
+  short_description: string | null;
+  description: string | null;
+  image_url: string | null;
+  image_path: string | null;
+  image_alt: string | null;
+  includes: string[];
+  signs: string[];
+  faqs: ServiceFaq[];
+  is_published: boolean;
+  is_featured: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+};
+
 export type Testimonial = {
   id: string;
   author_name: string;
@@ -114,6 +135,7 @@ export type ProjectSummary = {
 type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
 export type ProjectInsert = Optional<Project, Exclude<keyof Project, 'slug' | 'title'>>;
+export type ServiceInsert = Optional<Service, Exclude<keyof Service, 'slug' | 'name'>>;
 export type ProjectMediaInsert = Optional<ProjectMedia, Exclude<keyof ProjectMedia, 'project_id' | 'storage_path' | 'url'>>;
 export type TestimonialInsert = Optional<Testimonial, Exclude<keyof Testimonial, 'author_name' | 'content'>>;
 export type LeadInsert = Optional<Lead, Exclude<keyof Lead, 'name'>>;
@@ -124,6 +146,7 @@ export type Database = {
     Tables: {
       admin_users: { Row: AdminUser; Insert: AdminUserInsert; Update: Partial<AdminUser>; Relationships: [] };
       projects: { Row: Project; Insert: ProjectInsert; Update: Partial<Project>; Relationships: [] };
+      services: { Row: Service; Insert: ServiceInsert; Update: Partial<Service>; Relationships: [] };
       project_media: {
         Row: ProjectMedia;
         Insert: ProjectMediaInsert;

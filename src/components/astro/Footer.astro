@@ -1,12 +1,13 @@
 ---
 import type { SiteConfig } from '../../lib/types';
-import { SERVICES } from '../../lib/services';
+import { getPublishedServices } from '../../lib/queries';
 
 interface Props {
   config: SiteConfig;
 }
 
 const { config } = Astro.props;
+const services = await getPublishedServices(Astro.locals.supabase);
 const year = new Date().getFullYear();
 const tel = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, '')}` : null;
 const socials = Object.entries(config.social_links).filter(([, url]) => /^https?:\/\//.test(url));
@@ -22,7 +23,7 @@ const socials = Object.entries(config.social_links).filter(([, url]) => /^https?
     <nav aria-label="Services">
       <p class="font-semibold text-white">Services</p>
       <ul class="mt-3 space-y-2">
-        {SERVICES.map((s) => <li><a href={`/services/${s.slug}`} class="hover:text-white hover:underline">{s.name}</a></li>)}
+        {services.map((s) => <li><a href={`/services/${s.slug}`} class="hover:text-white hover:underline">{s.name}</a></li>)}
       </ul>
     </nav>
     <div>

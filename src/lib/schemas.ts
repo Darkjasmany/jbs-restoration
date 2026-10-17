@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { SERVICES } from './services';
 
 const text = (max: number) =>
   z
@@ -99,6 +98,43 @@ export const siteConfigSchema = z
 export type ProjectPayload = z.input<typeof projectSchema>;
 export type SiteConfigPayload = z.input<typeof siteConfigSchema>;
 
+const serviceItem = z.string().trim().min(1).max(300);
+
+export const serviceSchema = z
+  .object({
+    id: z.string().uuid(),
+    name: z.string().trim().min(2, 'Name is too short').max(120),
+    short_description: text(300),
+    description: text(5000),
+    image_url: z.string().url().max(1000).nullable(),
+    image_path: z.string().max(300).nullable(),
+    image_alt: text(200),
+    includes: z.array(serviceItem).max(20),
+    signs: z.array(serviceItem).max(20),
+    faqs: z
+      .array(
+        z.object({
+          q: z.string().trim().min(1, 'Every question needs a title').max(200),
+          a: z.string().trim().min(1, 'Every question needs an answer').max(1000),
+        }),
+      )
+      .max(20),
+    is_published: z.boolean(),
+    is_featured: z.boolean(),
+    sort_order: z.number().int().min(0).max(9999),
+  })
+  .superRefine((s, ctx) => {
+    // La imagen vive en services/<id>/<uuid>.<ext>, igual que la media de un proyecto.
+    if (s.image_path && !s.image_path.startsWith(`${s.id}/`)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['image_path'], message: 'Invalid file path' });
+    }
+    if (s.is_published && !s.short_description) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['short_description'], message: 'Add a short description before publishing' });
+    }
+  });
+
+export type ServicePayload = z.input<typeof serviceSchema>;
+
 export const testimonialSchema = z.object({
   id: z.string().uuid().optional(),
   author_name: z.string().trim().min(2, 'Name is too short').max(80),
@@ -128,7 +164,8 @@ export const contactSchema = z
       .transform((v) => v || null),
     service: z
       .string()
-      .refine((v) => v === '' || v === 'other' || SERVICES.some((s) => s.slug === v), 'Choose a valid service')
+      .trim()
+      .max(60)
       .nullish()
       .transform((v) => v || null),
     message: text(2000),

@@ -2,22 +2,23 @@
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import ProjectCard from '../../components/astro/ProjectCard.astro';
 import CtaBand from '../../components/astro/CtaBand.astro';
-import { getService } from '../../lib/services';
-import { getPublishedProjects, getSiteConfig, toSummary } from '../../lib/queries';
+import { getPublishedProjects, getServiceBySlug, getSiteConfig, toSummary } from '../../lib/queries';
 import { breadcrumbLd, serviceLd } from '../../lib/seo';
 
-const service = getService(Astro.params.slug ?? '');
+const db = Astro.locals.supabase;
+const service = await getServiceBySlug(db, Astro.params.slug ?? '');
 if (!service) return Astro.rewrite('/404');
 
-const db = Astro.locals.supabase;
 const [config, projects] = await Promise.all([getSiteConfig(db), getPublishedProjects(db, { service: service.slug, limit: 3 })]);
 const related = projects.map(toSummary);
 const tel = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, '')}` : null;
+const intro = service.description ?? service.short_description;
 ---
 
 <PublicLayout
   title={`${service.name} | ${config.company_name}`}
-  description={service.short}
+  description={service.short_description ?? service.description ?? undefined}
+  image={service.image_url ?? undefined}
   config={config}
   jsonLd={[
     serviceLd(service, config, Astro.site!),
@@ -33,7 +34,19 @@ const tel = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, '')}` : null;
 
   <div class="mx-auto grid max-w-6xl gap-16 px-6 pb-24 lg:grid-cols-[1fr_20rem]">
     <div class="space-y-14">
-      <p class="max-w-2xl text-xl leading-relaxed text-slate-700">{service.intro}</p>
+      {
+        service.image_url && (
+          <img
+            src={service.image_url}
+            alt={service.image_alt ?? service.name}
+            loading="eager"
+            decoding="async"
+            class="aspect-[16/9] w-full rounded-2xl object-cover ring-1 ring-slate-200"
+          />
+        )
+      }
+
+      {intro && <p class="max-w-2xl text-xl leading-relaxed text-slate-700">{intro}</p>}
 
       {
         service.includes.length > 0 && (

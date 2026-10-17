@@ -1,7 +1,6 @@
 import { useRef, useState, type SyntheticEvent, type ReactNode } from 'react';
 import { MediaUploader, type UploadedMedia } from './MediaUploader';
 import { removeObjects } from '../../../lib/storage';
-import { SERVICE_OPTIONS } from '../../../lib/services';
 import type { ProjectPayload } from '../../../lib/schemas';
 import type { MediaRole, MediaType, ProjectWithMedia } from '../../../lib/types';
 
@@ -58,13 +57,13 @@ function Preview({ item, className }: { item: Item; className: string }) {
   );
 }
 
-export function ProjectForm({ initial }: { initial: ProjectWithMedia | null }) {
+export function ProjectForm({ initial, services }: { initial: ProjectWithMedia | null; services: [string, string][] }) {
   const [id] = useState(() => initial?.id ?? crypto.randomUUID());
   const [saved, setSaved] = useState(Boolean(initial));
   const [form, setForm] = useState<FormState>({
     title: initial?.title ?? '',
     description: initial?.description ?? '',
-    service_type: initial?.service_type ?? 'roofing',
+    service_type: initial?.service_type ?? services[0]?.[0] ?? 'residential-roofing',
     city: initial?.city ?? '',
     state: initial?.state ?? '',
     roof_material: initial?.roof_material ?? '',
@@ -212,7 +211,7 @@ export function ProjectForm({ initial }: { initial: ProjectWithMedia | null }) {
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Service">
             <select value={form.service_type} onChange={(e) => set('service_type', e.target.value)} className={inputCls}>
-              {SERVICE_OPTIONS.map(([value, label]) => (
+              {services.map(([value, label]) => (
                 <option key={value} value={value}>{label}</option>
               ))}
             </select>

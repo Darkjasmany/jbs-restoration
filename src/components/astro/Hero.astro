@@ -1,5 +1,4 @@
 ---
-import { SERVICE_OPTIONS } from "../../lib/services";
 import type { SiteConfig } from "../../lib/types";
 import { displayPhone, toTel } from "../../lib/utils";
 import { ContactForm } from "../react/public/ContactForm";
@@ -7,9 +6,10 @@ import HeroOverlay from "./HeroOverlay.astro";
 
 interface Props {
   config: SiteConfig;
+  services: [string, string][];
 }
 
-const { config } = Astro.props;
+const { config, services } = Astro.props;
 const hasVideo = config.hero_type === "video" && !!config.hero_video_url;
 const telHref = toTel(config.phone);
 ---
@@ -147,7 +147,7 @@ const telHref = toTel(config.phone);
         <ContactForm
           client:visible
           compact
-          services={SERVICE_OPTIONS}
+          services={services}
           whatsappNumber={config.whatsapp_number}
         />
 

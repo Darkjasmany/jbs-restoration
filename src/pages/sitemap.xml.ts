@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { SERVICES } from '../lib/services';
+import { getPublishedServices } from '../lib/queries';
 
 type Entry = { path: string; lastmod?: string };
 
@@ -7,12 +7,15 @@ const escapeXml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').
 
 export const GET: APIRoute = async ({ locals, site }) => {
   const base = (site ?? new URL('https://jbsrestoration.com')).origin;
-  const { data: projects } = await locals.supabase.from('projects').select('slug, updated_at').eq('status', 'published');
+  const [{ data: projects }, services] = await Promise.all([
+    locals.supabase.from('projects').select('slug, updated_at').eq('status', 'published'),
+    getPublishedServices(locals.supabase),
+  ]);
 
   const entries: Entry[] = [
     { path: '/' },
     { path: '/services' },
-    ...SERVICES.map((s) => ({ path: `/services/${s.slug}` })),
+    ...services.map((s) => ({ path: `/services/${s.slug}` })),
     { path: '/portfolio' },
     ...(projects ?? []).map((p) => ({ path: `/portfolio/${p.slug}`, lastmod: p.updated_at.slice(0, 10) })),
     { path: '/about' },

@@ -1,5 +1,4 @@
-import type { ProjectWithMedia, SiteConfig } from './types';
-import type { Service } from './services';
+import type { ProjectWithMedia, Service, SiteConfig } from './types';
 import { coverOf } from './queries';
 
 export const abs = (path: string, site: string | URL) => new URL(path, site).toString();
@@ -26,8 +25,9 @@ export function serviceLd(service: Service, config: SiteConfig, site: string | U
     '@context': 'https://schema.org',
     '@type': 'Service',
     name: service.name,
-    description: service.intro,
+    description: service.description ?? service.short_description ?? undefined,
     url: abs(`/services/${service.slug}`, site),
+    ...(service.image_url && { image: service.image_url }),
     provider: { '@id': abs('/#business', site), '@type': 'RoofingContractor', name: config.company_name },
     ...(config.service_areas.length && { areaServed: config.service_areas }),
   };

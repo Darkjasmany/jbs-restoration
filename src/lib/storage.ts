@@ -1,6 +1,6 @@
 import { getAccessToken, getBrowserSupabase } from './supabase';
 
-export type Bucket = 'projects' | 'site';
+export type Bucket = 'projects' | 'site' | 'services';
 
 const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
 const ANON_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;

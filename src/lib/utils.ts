@@ -66,6 +66,22 @@ export const slugify = (value: string) =>
     .slice(0, 80);
 
 /**
+ * Nombre legible de un servicio a partir de su slug.
+ *
+ * `projects.service_type` guarda el slug del servicio (texto libre, sin FK), de
+ * modo que las tarjetas y el detalle de un proyecto no pueden depender del
+ * catálogo de la base de datos. Este helper embellece el slug
+ * ("residential-roofing" → "Residential Roofing") y sirve de respaldo aunque el
+ * servicio ya no exista.
+ */
+export const serviceName = (slug: string) =>
+  slug
+    .split("-")
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+
+/**
  * Obtener fecha actual
  */
 export const yearNow = () => {

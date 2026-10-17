@@ -1,12 +1,13 @@
 ---
 import PublicLayout from "../layouts/PublicLayout.astro";
 import Hero from "../components/astro/Hero.astro";
-import ServicesGrid from "../components/astro/ServicesGrid.astro";
+// import ServicesGrid from "../components/astro/ServicesGrid.astro";
 import ProjectCard from "../components/astro/ProjectCard.astro";
 import CtaBand from "../components/astro/CtaBand.astro";
 import { TestimonialsCarousel } from "../components/react/public/TestimonialsCarousel";
 import {
   getPublishedProjects,
+  getPublishedServices,
   getSiteConfig,
   getTestimonials,
   toSummary,
@@ -15,11 +16,15 @@ import TrustBar from "../components/astro/TrustBar.astro";
 import HomeServices from "../components/astro/HomeServices.astro";
 
 const db = Astro.locals.supabase;
-const [config, featured, testimonials] = await Promise.all([
+const [config, featured, testimonials, allServices] = await Promise.all([
   getSiteConfig(db),
   getPublishedProjects(db, { featured: true, limit: 5 }),
   getTestimonials(db, 9),
+  getPublishedServices(db),
 ]);
+const serviceOptions: [string, string][] = allServices.map((s): [string, string] => [s.slug, s.name]);
+const featuredServices = allServices.filter((s) => s.is_featured);
+const homeServices = featuredServices.length > 0 ? featuredServices : allServices.slice(0, 3);
 const showcase = (
   featured.length >= 3 ? featured : await getPublishedProjects(db, { limit: 5 })
 ).map(toSummary);
@@ -51,13 +56,13 @@ const steps = [
   config={config}
   overlay
 >
-  <Hero config={config} />
+  <Hero config={config} services={serviceOptions} />
 
   <TrustBar />
 
-  <HomeServices />
+  {homeServices.length > 0 && <HomeServices services={homeServices} />}
 
-  <section
+  <!-- <section
     class="mx-auto grid max-w-6xl gap-12 px-6 py-24 lg:grid-cols-[1fr_1.6fr]"
   >
     <div class="lg:sticky lg:top-8 lg:self-start">
@@ -75,7 +80,7 @@ const steps = [
       >
     </div>
     <ServicesGrid />
-  </section>
+  </section> -->
 
   {
     showcase.length > 0 && (

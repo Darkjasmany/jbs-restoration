@@ -1,0 +1,8 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { ServiceForm } from '../../../components/react/admin/ServiceForm';
+---
+
+<AdminLayout title="New service">
+  <ServiceForm client:only="react" initial={null} />
+</AdminLayout>

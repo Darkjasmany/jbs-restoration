@@ -2,16 +2,16 @@
 import PublicLayout from '../../layouts/PublicLayout.astro';
 import CtaBand from '../../components/astro/CtaBand.astro';
 import { PortfolioFilter } from '../../components/react/public/PortfolioFilter';
-import { SERVICES, SERVICE_OPTIONS } from '../../lib/services';
-import { getPublishedProjects, getSiteConfig, toSummary } from '../../lib/queries';
+import { getPublishedProjects, getPublishedServices, getSiteConfig, toSummary } from '../../lib/queries';
 import { breadcrumbLd } from '../../lib/seo';
 
 const db = Astro.locals.supabase;
-const [config, projects] = await Promise.all([getSiteConfig(db), getPublishedProjects(db)]);
+const [config, projects, services] = await Promise.all([getSiteConfig(db), getPublishedProjects(db), getPublishedServices(db)]);
+const serviceOptions: [string, string][] = services.map((s) => [s.slug, s.name]);
 const summaries = projects.map(toSummary);
 
 const requested = Astro.url.searchParams.get('service') ?? '';
-const initialService = SERVICES.some((s) => s.slug === requested) ? requested : '';
+const initialService = serviceOptions.some(([slug]) => slug === requested) ? requested : '';
 const requestedCity = Astro.url.searchParams.get('city') ?? '';
 const initialCity = summaries.some((p) => p.city === requestedCity) ? requestedCity : '';
 ---
@@ -28,7 +28,7 @@ const initialCity = summaries.some((p) => p.city === requestedCity) ? requestedC
     <div class="mt-12">
       {
         summaries.length > 0 ? (
-          <PortfolioFilter client:visible projects={summaries} services={SERVICE_OPTIONS} initialService={initialService} initialCity={initialCity} />
+          <PortfolioFilter client:visible projects={summaries} services={serviceOptions} initialService={initialService} initialCity={initialCity} />
         ) : (
           <p class="rounded-xl bg-slate-50 p-8 text-slate-600">Projects are coming soon.</p>
         )

@@ -10,6 +10,7 @@ const path = Astro.url.pathname.replace(/\/$/, '');
 const links = [
   { href: '/admin', label: 'Overview', active: path === '/admin' },
   { href: '/admin/projects', label: 'Projects', active: path.startsWith('/admin/projects') },
+  { href: '/admin/services', label: 'Services', active: path.startsWith('/admin/services') },
   { href: '/admin/testimonials', label: 'Testimonials', active: path === '/admin/testimonials' },
   { href: '/admin/settings', label: 'Site settings', active: path === '/admin/settings' },
 ];

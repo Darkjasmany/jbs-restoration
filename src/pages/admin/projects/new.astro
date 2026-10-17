@@ -1,8 +1,16 @@
 ---
 import AdminLayout from '../../../layouts/AdminLayout.astro';
 import { ProjectForm } from '../../../components/react/admin/ProjectForm';
+
+const { data: services } = await Astro.locals.supabase
+  .from('services')
+  .select('slug, name')
+  .eq('is_published', true)
+  .order('sort_order')
+  .order('name');
+const serviceOptions: [string, string][] = (services ?? []).map((s) => [s.slug, s.name]);
 ---
 
 <AdminLayout title="New project">
-  <ProjectForm client:only="react" initial={null} />
+  <ProjectForm client:only="react" initial={null} services={serviceOptions} />
 </AdminLayout>

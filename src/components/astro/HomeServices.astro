@@ -1,122 +1,54 @@
-
 ---
-const homeServices = [
-  {
-    name: "Residential Roofing",
-    image: "/images/services/residential-roofing.webp",
-    alt: "Residential roof installation and repair",
-  },
-  {
-    name: "Siding",
-    image: "/images/services/siding.webp",
-    alt: "Exterior siding installation on a home",
-  },
-  {
-    name: "Insurance Restoration",
-    image: "/images/services/insurance-restoration.webp",
-    alt: "Home restoration after storm damage",
-  },
-  {
-    name: "Interior Restoration",
-    image: "/images/services/interior-restoration.webp",
-    alt: "Interior home restoration and repairs",
-  },
-  {
-    name: "Interior & Exterior Painting",
-    image: "/images/services/painting.webp",
-    alt: "Professional interior and exterior house painting",
-  },
-];
+import type { Service } from '../../lib/types';
+
+interface Props {
+  services: Service[];
+}
+
+const { services } = Astro.props;
 ---
 
 <section id="services" class="bg-white py-20 sm:py-24">
   <div class="mx-auto max-w-6xl px-6">
-    <!-- Section heading -->
-    <div class="mb-10 flex flex-col gap-5 sm:mb-12 sm:flex-row
-                sm:items-end sm:justify-between">
+    <div class="mb-10 flex flex-col gap-5 sm:mb-12 sm:flex-row sm:items-end sm:justify-between">
       <div class="max-w-2xl">
-        <span class="text-sm font-bold uppercase tracking-[0.18em]
-                     text-brand-700">
-          JBS Restoration
-        </span>
-
-        <h2 class="mt-3 text-3xl font-extrabold leading-tight
-                   text-ink-900 sm:text-4xl">
-          Our Services
-        </h2>
-
+        <span class="text-sm font-bold uppercase tracking-[0.18em] text-brand-700">JBS Restoration</span>
+        <h2 class="mt-3 text-3xl font-extrabold leading-tight text-ink-900 sm:text-4xl">Our Services</h2>
         <p class="mt-4 max-w-xl text-base leading-7 text-slate-600 sm:text-lg">
-          From roofing to complete restoration, our team is ready
-          to help protect and improve your property.
+          From roofing to complete restoration, our team is ready to help protect and improve your property.
         </p>
       </div>
-
-      <a
-        href="/services"
-        class="inline-flex w-fit items-center gap-2 font-bold
-               text-brand-700 transition hover:text-ink-900"
-      >
+      <a href="/services" class="inline-flex w-fit items-center gap-2 font-bold text-brand-700 transition hover:text-ink-900">
         Explore all services
         <span aria-hidden="true">→</span>
       </a>
     </div>
 
-    <!-- Service cards -->
-    <ul class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-6">
+    <ul class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {
-        homeServices.map((service, index) => (
-          <li class:list={[
-            "group min-w-0",
-            index < 3 ? "lg:col-span-2" : "lg:col-span-3",
-          ]}>
+        services.map((service) => (
+          <li class="group min-w-0">
             <a
-              href="/contact"
-              class="relative block aspect-[4/3] overflow-hidden
-                     rounded-xl bg-ink-900 shadow-sm
-                     ring-1 ring-black/5 transition
-                     duration-300 hover:-translate-y-1 hover:shadow-xl
-                     focus-visible:outline-2
-                     focus-visible:outline-offset-4
-                     focus-visible:outline-brand-700"
-              aria-label={`Contact JBS Restoration about ${service.name}`}
+              href={`/services/${service.slug}`}
+              class="relative flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-xl bg-ink-900 shadow-sm ring-1 ring-black/5 transition duration-300 hover:-translate-y-1 hover:shadow-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-700"
+              aria-label={`Learn about ${service.name}`}
             >
-              <img
-                src={service.image}
-                alt={service.alt}
-                loading="lazy"
-                decoding="async"
-                class="absolute inset-0 h-full w-full object-cover
-                       transition-transform duration-500
-                       group-hover:scale-105"
-              />
-
-              <!-- Contrast overlay -->
-              <div
-                aria-hidden="true"
-                class="absolute inset-0 bg-gradient-to-t
-                       from-ink-900/95 via-ink-900/25 to-transparent"
-              />
-
-              <!-- Gold accent -->
-              <span
-                aria-hidden="true"
-                class="absolute inset-x-0 bottom-0 h-1
-                       bg-gold-500 transition-all duration-300
-                       group-hover:h-1.5"
-              />
-
-              <div class="absolute inset-x-0 bottom-0 p-5 sm:p-6">
-                <h3 class="max-w-md text-xl font-extrabold leading-snug
-                           text-white sm:text-2xl">
-                  {service.name}
-                </h3>
-
-                <span
-                  class="mt-3 inline-flex items-center gap-2
-                         text-sm font-semibold text-white/85
-                         transition group-hover:text-gold-400"
-                >
-                  Get an estimate
+              {service.image_url && (
+                <img
+                  src={service.image_url}
+                  alt={service.image_alt ?? service.name}
+                  loading="lazy"
+                  decoding="async"
+                  class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              )}
+              <div aria-hidden="true" class="absolute inset-0 bg-gradient-to-t from-ink-900/95 via-ink-900/40 to-ink-900/10" />
+              <span aria-hidden="true" class="absolute inset-x-0 bottom-0 h-1 bg-gold-500 transition-all duration-300 group-hover:h-1.5" />
+              <div class="relative p-5 sm:p-6">
+                <h3 class="max-w-md text-xl font-extrabold leading-snug text-white sm:text-2xl">{service.name}</h3>
+                {service.short_description && <p class="mt-2 line-clamp-2 text-sm leading-6 text-white/80">{service.short_description}</p>}
+                <span class="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-white/85 transition group-hover:text-gold-400">
+                  Learn more
                   <span aria-hidden="true">→</span>
                 </span>
               </div>

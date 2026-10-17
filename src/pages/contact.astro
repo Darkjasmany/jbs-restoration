@@ -1,13 +1,14 @@
 ---
 import PublicLayout from '../layouts/PublicLayout.astro';
 import { ContactForm } from '../components/react/public/ContactForm';
-import { SERVICES, SERVICE_OPTIONS } from '../lib/services';
-import { getSiteConfig } from '../lib/queries';
+import { getPublishedServices, getSiteConfig } from '../lib/queries';
 import { breadcrumbLd } from '../lib/seo';
 
-const config = await getSiteConfig(Astro.locals.supabase);
+const db = Astro.locals.supabase;
+const [config, services] = await Promise.all([getSiteConfig(db), getPublishedServices(db)]);
+const serviceOptions: [string, string][] = services.map((s) => [s.slug, s.name]);
 const requested = Astro.url.searchParams.get('service') ?? '';
-const initialService = SERVICES.some((s) => s.slug === requested) ? requested : '';
+const initialService = serviceOptions.some(([slug]) => slug === requested) ? requested : '';
 const tel = config.phone ? `tel:${config.phone.replace(/[^\d+]/g, '')}` : null;
 const wa = config.whatsapp_number?.replace(/\D/g, '');
 ---
@@ -23,7 +24,7 @@ const wa = config.whatsapp_number?.replace(/\D/g, '');
       <h1 class="text-4xl font-extrabold leading-tight sm:text-5xl">Get your free estimate</h1>
       <p class="mt-4 max-w-xl text-lg text-slate-600">Tell us what is going on with your roof. We will get back to you to schedule an inspection.</p>
       <div class="mt-10">
-        <ContactForm client:load services={SERVICE_OPTIONS} initialService={initialService} whatsappNumber={config.whatsapp_number} />
+        <ContactForm client:load services={serviceOptions} initialService={initialService} whatsappNumber={config.whatsapp_number} />
       </div>
     </div>
 

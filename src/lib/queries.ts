@@ -3,6 +3,7 @@ import type {
   ProjectMedia,
   ProjectSummary,
   ProjectWithMedia,
+  Service,
   SiteConfig,
   Testimonial,
 } from "./types";
@@ -177,6 +178,48 @@ export function getTestimonials(
       .order("created_at", { ascending: false })
       .limit(limit);
     return data ?? [];
+  });
+}
+
+/** Servicios publicados, ordenados para el catálogo público (/services). */
+export function getPublishedServices(db: Client): Promise<Service[]> {
+  return devMemo("services:published", async () => {
+    const { data } = await db
+      .from("services")
+      .select("*")
+      .eq("is_published", true)
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: true });
+    return data ?? [];
+  });
+}
+
+/** Servicios publicados y destacados, para la sección de la home. */
+export function getFeaturedServices(db: Client): Promise<Service[]> {
+  return devMemo("services:featured", async () => {
+    const { data } = await db
+      .from("services")
+      .select("*")
+      .eq("is_published", true)
+      .eq("is_featured", true)
+      .order("sort_order", { ascending: true });
+    return data ?? [];
+  });
+}
+
+/** Un servicio publicado por slug (la página de detalle). */
+export function getServiceBySlug(
+  db: Client,
+  slug: string,
+): Promise<Service | null> {
+  return devMemo(`service:${slug}`, async () => {
+    const { data } = await db
+      .from("services")
+      .select("*")
+      .eq("slug", slug)
+      .eq("is_published", true)
+      .maybeSingle();
+    return data ?? null;
   });
 }
 

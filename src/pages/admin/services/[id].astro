@@ -1,0 +1,18 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+import { ServiceForm } from '../../../components/react/admin/ServiceForm';
+import type { Service } from '../../../lib/types';
+
+const { id } = Astro.params;
+if (!id || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+  return new Response('Not found', { status: 404 });
+}
+
+const { data } = await Astro.locals.supabase.from('services').select('*').eq('id', id).maybeSingle();
+if (!data) return new Response('Not found', { status: 404 });
+const service = data as unknown as Service;
+---
+
+<AdminLayout title="Edit service">
+  <ServiceForm client:only="react" initial={service} />
+</AdminLayout>

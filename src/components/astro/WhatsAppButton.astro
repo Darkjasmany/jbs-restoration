@@ -49,7 +49,7 @@ const valid = number.length >= 10;
             </label>
             <input
               id="wa-msg"
-              maxLength={300}
+              maxlength={300}
               placeholder="Write your own message"
               class="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-600/30"
             />
@@ -109,7 +109,7 @@ const valid = number.length >= 10;
     const number = root.dataset.number ?? "";
     const panel = document.getElementById("wa-panel") as HTMLDivElement;
     const toggle = document.getElementById("wa-toggle") as HTMLButtonElement;
-    const icon = document.getElementById("wa-icon") as SVGPathElement;
+    const icon = document.getElementById("wa-icon") as unknown as SVGPathElement;
     const ping = document.getElementById("wa-ping") as HTMLSpanElement;
     const form = root.querySelector("[data-wa-form]") as HTMLFormElement;
     const input = document.getElementById("wa-msg") as HTMLInputElement;

@@ -17,6 +17,23 @@ export const POST: APIRoute = async ({ request, locals }) => {
     typeof startedAt === "number" && Date.now() - startedAt < MIN_FILL_MS;
   if (website || tooFast) return json({ ok: true });
 
+  // El catálogo de servicios vive en la base de datos: se valida contra los
+  // servicios publicados (se acepta "other" y el campo vacío).
+  if (lead.service && lead.service !== "other") {
+    const { data: service } = await locals.supabase
+      .from("services")
+      .select("slug")
+      .eq("slug", lead.service)
+      .eq("is_published", true)
+      .maybeSingle();
+    if (!service) {
+      return json(
+        { error: "Validation failed", issues: [{ path: ["service"], message: "Choose a valid service" }] },
+        422,
+      );
+    }
+  }
+
   const { error } = await locals.supabase
     .from("leads")
     .insert({ ...lead, source: "contact_form" });

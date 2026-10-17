@@ -2,15 +2,16 @@
 import AdminLayout from '../../layouts/AdminLayout.astro';
 
 const db = Astro.locals.supabase;
-const count = async (table: 'projects' | 'testimonials' | 'leads', filter?: [string, string | boolean]) => {
+const count = async (table: 'projects' | 'services' | 'testimonials' | 'leads', filter?: [string, string | boolean]) => {
   const query = db.from(table).select('id', { count: 'exact', head: true });
   const { count: total } = await (filter ? query.eq(filter[0], filter[1]) : query);
   return total ?? 0;
 };
 
-const [published, drafts, testimonials, newLeads] = await Promise.all([
+const [published, drafts, services, testimonials, newLeads] = await Promise.all([
   count('projects', ['status', 'published']),
   count('projects', ['status', 'draft']),
+  count('services'),
   count('testimonials'),
   count('leads', ['status', 'new']),
 ]);
@@ -18,11 +19,13 @@ const [published, drafts, testimonials, newLeads] = await Promise.all([
 const stats = [
   { label: 'Published projects', value: published, href: '/admin/projects' },
   { label: 'Draft projects', value: drafts, href: '/admin/projects' },
+  { label: 'Services', value: services, href: '/admin/services' },
   { label: 'Testimonials', value: testimonials, href: '/admin/testimonials' },
   { label: 'New estimate requests', value: newLeads, href: null },
 ];
 const actions = [
   { href: '/admin/projects/new', title: 'Add a finished roof', text: 'Upload photos, describe the job and publish it.' },
+  { href: '/admin/services', title: 'Manage services', text: 'Edit the catalog, add photos and feature services on the home page.' },
   { href: '/admin/testimonials', title: 'Manage testimonials', text: 'Add, hide or edit customer reviews.' },
   { href: '/admin/settings', title: 'Change the home page banner', text: 'Swap the background video, text and WhatsApp messages.' },
 ];

@@ -8,11 +8,15 @@ if (!id || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.te
   return new Response('Not found', { status: 404 });
 }
 
-const { data } = await Astro.locals.supabase.from('projects').select('*, project_media(*)').eq('id', id).maybeSingle();
+const [{ data }, { data: services }] = await Promise.all([
+  Astro.locals.supabase.from('projects').select('*, project_media(*)').eq('id', id).maybeSingle(),
+  Astro.locals.supabase.from('services').select('slug, name').eq('is_published', true).order('sort_order').order('name'),
+]);
 if (!data) return new Response('Not found', { status: 404 });
 const project = data as unknown as ProjectWithMedia;
+const serviceOptions: [string, string][] = (services ?? []).map((s) => [s.slug, s.name]);
 ---
 
 <AdminLayout title="Edit project">
-  <ProjectForm client:only="react" initial={project} />
+  <ProjectForm client:only="react" initial={project} services={serviceOptions} />
 </AdminLayout>
